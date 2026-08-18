@@ -153,20 +153,20 @@ function placeAllStars(ziweiPos) {
 // ============ 主星释义 ============
 
 var STAR_MEANINGS = {
-  '紫微': { type: '帝星', nature: '尊贵、领导', color: '#b8860b', desc: '紫微为北斗主星，象征帝王之尊，主尊贵权势' },
-  '天机': { type: '善星', nature: '智慧、变动', color: '#4a6fa5', desc: '天机主智慧谋略，善于筹划，性多变' },
-  '太阳': { type: '贵星', nature: '光明、博爱', color: '#cd5c5c', desc: '太阳主光明正大，博爱慷慨，男命主父己子' },
-  '武曲': { type: '财星', nature: '刚毅、财利', color: '#8b6914', desc: '武曲主财利武勇，性刚毅果断' },
-  '天同': { type: '福星', nature: '和乐、安逸', color: '#5a9b5a', desc: '天同主福寿和乐，性温和安逸' },
-  '廉贞': { type: '囚星', nature: '情感、争讼', color: '#a02828', desc: '廉贞主情感争讼，性刚烈多欲' },
-  '天府': { type: '令星', nature: '稳重、储藏', color: '#daa520', desc: '天府为南斗主星，主稳重守成' },
-  '太阴': { type: '母星', nature: '柔美、阴柔', color: '#6a8cc4', desc: '太阴主柔美阴柔，女命主母' },
-  '贪狼': { type: '桃花星', nature: '欲望、交际', color: '#c4623c', desc: '贪狼主欲望交际，多才多艺' },
-  '巨门': { type: '暗星', nature: '口舌、疑心', color: '#6c6a80', desc: '巨门主口舌是非，多疑好辩' },
-  '天相': { type: '印星', nature: '端正、辅助', color: '#4a3f7a', desc: '天相主端正辅助，性稳重有印' },
-  '天梁': { type: '荫星', nature: '清高、荫庇', color: '#5a7a5a', desc: '天梁主清高荫庇，性孤高有寿' },
-  '七杀': { type: '将星', nature: '威猛、果断', color: '#8b3a3a', desc: '七杀主威猛果断，性刚强有冲劲' },
-  '破军': { type: '耗星', nature: '破坏、开创', color: '#9c4a4a', desc: '破军主破坏开创，性刚烈多变' }
+  '紫微': { type: '帝星', nature: '尊贵、领导', color: '#b8860b', desc: '紫微为北斗主星，象征帝王之尊，气质高贵，自带领导气场' },
+  '天机': { type: '善星', nature: '智慧、变动', color: '#4a6fa5', desc: '天机智慧过人，善于筹划谋略，思维灵活，性多变动' },
+  '太阳': { type: '贵星', nature: '光明、博爱', color: '#cd5c5c', desc: '太阳光明磊落，博爱慷慨，男命看父星与自身，女命看夫运' },
+  '武曲': { type: '财星', nature: '刚毅、财利', color: '#8b6914', desc: '武曲刚毅果断，与财利武勇有缘，行动力十足' },
+  '天同': { type: '福星', nature: '和乐、安逸', color: '#5a9b5a', desc: '天同福寿和乐，性情温和，懂得享受生活' },
+  '廉贞': { type: '囚星', nature: '情感、争讼', color: '#a02828', desc: '廉贞情感丰富但易生争讼，性格刚烈，欲望较盛' },
+  '天府': { type: '令星', nature: '稳重、储藏', color: '#daa520', desc: '天府为南斗主星，稳重守成，善于储蓄管理' },
+  '太阴': { type: '母星', nature: '柔美、阴柔', color: '#6a8cc4', desc: '太阴柔美细腻，女命看母星与自身，情感内敛丰富' },
+  '贪狼': { type: '桃花星', nature: '欲望、交际', color: '#c4623c', desc: '贪狼多才多艺，交际手腕强，欲望丰富，桃花旺' },
+  '巨门': { type: '暗星', nature: '口舌、疑心', color: '#6c6a80', desc: '巨门容易口舌是非，心思细密但多疑好辩' },
+  '天相': { type: '印星', nature: '端正、辅助', color: '#4a3f7a', desc: '天相端正稳重，善于辅佐，自带印信之力' },
+  '天梁': { type: '荫星', nature: '清高、荫庇', color: '#5a7a5a', desc: '天梁清高有荫庇之力，性格孤高，自带长寿特质' },
+  '七杀': { type: '将星', nature: '威猛、果断', color: '#8b3a3a', desc: '七杀威猛果断，性格刚强，冲劲十足，适合开创' },
+  '破军': { type: '耗星', nature: '破坏、开创', color: '#9c4a4a', desc: '破军破旧立新，开创力强，性格刚烈，变化多端' }
 };
 
 // ============ 宫位释义 ============
@@ -420,23 +420,23 @@ function placeAuxAndShaStars(yearStem, yearBranch, lunarMonth, hourIdx) {
 
 var DEEP_PALACE_INTERPRETATIONS = {
   '命宫': {
-    '紫微': '命宫紫微，气质高贵，有领导才能，但易孤高自傲。宜培养谦和之心，可成大器。',
-    '天机': '命宫天机，心思细腻，善于谋略，应变力强。适合从事策划、研究类工作，但需防多虑伤神。',
-    '太阳': '命宫太阳，光明磊落，热心公益，男命主贵。须注意劳逸结合，避免过劳。',
-    '武曲': '命宫武曲，刚毅果决，财缘佳，适合金融武职。需注意人际沟通，避免过于刚硬。',
-    '天同': '命宫天同，性情温和，福厚安逸，享受生活。需激发上进心，避免过于懒散。',
-    '廉贞': '命宫廉贞，性格刚烈，情感丰富，多才多艺。需注意情绪管理，防桃花纠纷。',
-    '天府': '命宫天府，稳重保守，有储藏之能，领导力佳。适合管理、金融，但需防过于保守。',
-    '太阴': '命宫太阴，温柔细腻，重视感情，女命主母星。宜从事文艺、服务类工作。',
-    '贪狼': '命宫贪狼，欲望强盛，多才多艺，交际广泛。需注意节制欲望，防桃花之累。',
-    '巨门': '命宫巨门，口才好但多疑，善于分析批评。适合法律、研究，需防口舌是非。',
-    '天相': '命宫天相，端正稳重，有印信之能，善于辅佐。适合公务、管理类工作。',
-    '天梁': '命宫天梁，清高正直，有荫庇之能，逢凶化吉。适合教育、宗教、医药。',
-    '七杀': '命宫七杀，威猛刚强，有开创精神，冲劲十足。适合军警、创业，需防冲动。',
-    '破军': '命宫破军，性刚多变，有破坏后重建之能。适合开创性工作，需防破财。'
+    '紫微': '命宫紫微，气质高贵，有领导才能，但容易孤高自傲。培养谦和心态，更容易成大器。',
+    '天机': '命宫天机，心思细腻，善于谋略，应变力强。适合策划、研究类工作，注意别想太多伤神。',
+    '太阳': '命宫太阳，光明磊落，热心公益，男命看父星与自身运势。注意劳逸结合，别太累着。',
+    '武曲': '命宫武曲，刚毅果决，财缘不错，适合金融或武职。留意人际沟通，别太刚硬。',
+    '天同': '命宫天同，性情温和，福厚安逸，懂得享受生活。适当激发上进心，别太安逸了。',
+    '廉贞': '命宫廉贞，性格刚烈，情感丰富，多才多艺。注意情绪管理，小心桃花纠纷。',
+    '天府': '命宫天府，稳重保守，善于储蓄管理，领导力不错。适合管理、金融，适当突破舒适圈。',
+    '太阴': '命宫太阴，温柔细腻，重视感情，女命看母星。适合文艺、服务类方向。',
+    '贪狼': '命宫贪狼，欲望丰富，多才多艺，交际广泛。注意节制欲望，小心桃花牵绊。',
+    '巨门': '命宫巨门，口才好但心思多疑，善于分析批评。适合法律、研究，留意口舌是非。',
+    '天相': '命宫天相，端正稳重，有印信之力，善于辅佐。适合公务、管理类方向。',
+    '天梁': '命宫天梁，清高正直，有荫庇之力，逢凶化吉。适合教育、宗教、医药。',
+    '七杀': '命宫七杀，威猛刚强，有开创精神，冲劲十足。适合军警、创业，注意别太冲动。',
+    '破军': '命宫破军，性格刚强多变，有破旧立新之能。适合开创性工作，留意财务波动。'
   },
   '官禄': {
-    '紫微': '事业宫紫微，适合从政、管理，有领导之位，事业发展大。',
+    '紫微': '事业宫紫微，适合从政、管理，有领导之位，事业发展空间大。',
     '天机': '事业宫天机，适合策划、研究、技术类工作，智慧型事业。',
     '太阳': '事业宫太阳，适合传媒、外交、公益，有声名之事业。',
     '武曲': '事业宫武曲，适合金融、军警、机械，财运型事业。',
@@ -445,16 +445,16 @@ var DEEP_PALACE_INTERPRETATIONS = {
   },
   '财帛': {
     '紫微': '财帛宫紫微，财运丰隆，有贵人助财，理财有方。',
-    '武曲': '财帛宫武曲，主财星入财帛，理财能力强，适合金融投资。',
-    '天府': '财帛宫天府，主储藏之财，有积蓄之能，理财保守稳健。',
-    '太阴': '财帛宫太阴，主暗财，偏财运佳，可能有意外之财。',
+    '武曲': '财帛宫武曲，财星入财帛，理财能力强，适合金融投资。',
+    '天府': '财帛宫天府，储藏之财，有积蓄之能，理财保守稳健。',
+    '太阴': '财帛宫太阴，偏财运佳，可能有意外之财。',
     '破军': '财帛宫破军，财运波动，破而后立，需控制消费。'
   },
   '夫妻': {
-    '紫微': '夫妻宫紫微，配偶有贵气，但易有支配欲，需互相尊重。',
+    '紫微': '夫妻宫紫微，配偶有贵气，但容易有支配欲，需互相尊重。',
     '太阴': '夫妻宫太阴，配偶温柔体贴，感情和谐，男命得贤内助。',
-    '贪狼': '夫妻宫贪狼，感情多姿，桃花重，需防外遇。',
-    '廉贞': '夫妻宫廉贞，感情热烈但易有争执，需控制情绪。',
+    '贪狼': '夫妻宫贪狼，感情多姿多彩，桃花重，留意外遇风险。',
+    '廉贞': '夫妻宫廉贞，感情热烈但容易有争执，注意控制情绪。',
     '天同': '夫妻宫天同，感情温馨，配偶温和，婚姻和顺。'
   }
 };
@@ -471,11 +471,11 @@ function generateDeepPalaceInterpretation(palaceName, stars, auxStars, shaStars,
     } else {
       var starInfo = STAR_MEANINGS[mainStar];
       if (starInfo) {
-        interpretations.push({ star: mainStar, text: palaceName + '逢' + mainStar + '，主' + starInfo.nature + '。' + starInfo.desc + '。' });
+        interpretations.push({ star: mainStar, text: palaceName + '逢' + mainStar + '，' + starInfo.nature + '。' + starInfo.desc + '。' });
       }
     }
   } else {
-    interpretations.push({ star: '无主星', text: palaceName + '无主星坐守，性格多变，易受他宫影响。' });
+    interpretations.push({ star: '无主星', text: palaceName + '无主星坐守，性格比较多变，容易受他宫影响，参考对宫和三方四正来判断。' });
   }
 
   // 四化解读
@@ -682,49 +682,49 @@ function generateDailyFortuneText(chart, yearPalace, dailyPalace, dayStem, dayBr
     return m ? s + '（' + m.nature + '）' : s;
   });
 
-  var general = '今日流年宫位在「' + yearPalace + '」，主星：' +
+  var general = '今天流年宫位在「' + yearPalace + '」，星：' +
     (starDescs.length > 0 ? starDescs.join('、') : '无主星') + '。';
 
   var career = '', wealth = '', love = '', health = '';
 
   // 事业
   if (palaceStars.includes('紫微') || palaceStars.includes('武曲')) {
-    career = '事业运势强劲，有领导力和决断力，适合处理重要事务。';
+    career = '事业运超强！有领导力和决断力，重要的事今天办最合适～';
   } else if (palaceStars.includes('天机') || palaceStars.includes('太阳')) {
-    career = '思维活跃，人际关系佳，适合沟通协作类工作。';
+    career = '思维活跃，人缘也好，适合沟通协作类的工作～';
   } else if (palaceStars.includes('巨门') || palaceStars.includes('廉贞')) {
-    career = '需注意口舌是非，工作中避免争辩，宜低调行事。';
+    career = '注意口舌是非，工作中别争辩，低调一点更稳～';
   } else {
-    career = '事业平稳，按部就班即可。';
+    career = '事业平稳，按部就班就好，不急不躁～';
   }
 
   // 财运
   if (palaceStars.includes('武曲') || palaceStars.includes('天府')) {
-    wealth = '财运较好，适合理财投资，有进财之象。';
+    wealth = '财运不错，适合理财投资，有进财的迹象～';
   } else if (palaceStars.includes('太阴')) {
-    wealth = '偏财运佳，可能有暗财或他人馈赠。';
+    wealth = '偏财运蛮好的，可能有暗财或收到礼物哦～';
   } else if (palaceStars.includes('破军') || palaceStars.includes('贪狼')) {
-    wealth = '财运波动大，不宜大额投资，控制消费。';
+    wealth = '财运波动有点大，别急着大额投资，控制好消费～';
   } else {
-    wealth = '财运平稳，量入为出。';
+    wealth = '财运平稳，量入为出就好～';
   }
 
   // 感情
   if (palaceStars.includes('贪狼') || palaceStars.includes('廉贞')) {
-    love = '感情方面有桃花之象，但需注意分寸，已婚者防外遇。';
+    love = '感情上有桃花的迹象，注意把握好分寸，已婚的留心一下哦～';
   } else if (palaceStars.includes('太阴') || palaceStars.includes('天同')) {
-    love = '感情温馨和谐，适合与伴侣共度时光。';
+    love = '感情温馨甜蜜，适合跟伴侣一起度过的美好时光～';
   } else {
-    love = '感情平稳，无大波动。';
+    love = '感情平稳，没什么大波动，安心啦～';
   }
 
   // 健康
   if (palaceStars.includes('七杀') || palaceStars.includes('破军')) {
-    health = '注意身体安全，避免剧烈运动和意外伤害。';
+    health = '注意身体安全，别做太剧烈的运动，小心磕碰～';
   } else if (palaceStars.includes('巨门') || palaceStars.includes('天梁')) {
-    health = '注意口腔、消化系统，保持规律作息。';
+    health = '留意口腔和消化系统，保持规律作息～';
   } else {
-    health = '健康状况良好，注意日常保养。';
+    health = '健康状况不错，注意日常保养就好～';
   }
 
   return {
@@ -745,16 +745,16 @@ function generateChartNarrative(chart) {
   var starInfo = STAR_MEANINGS[mainStar] || { type: '', nature: '', desc: '' };
 
   var narrative = '命宫在' + mgPalace.stem + mgPalace.branch + '（' + chart.wuxingJu.element +
-    chart.wuxingJu.ju + '局），主星' + (mgStars.length > 0 ? mgStars.join('、') : '无') + '。';
+    chart.wuxingJu.ju + '局），星' + (mgStars.length > 0 ? mgStars.join('、') : '无') + '。';
 
-  narrative += '命宫主星为' + mainStar + '，主' + starInfo.nature + '。' + starInfo.desc + '。';
+  narrative += '命宫主星' + mainStar + '，' + starInfo.nature + '。' + starInfo.desc + '。';
 
   // 四化总览
   if (chart.siHuaList && chart.siHuaList.length > 0) {
     var huaText = chart.siHuaList.map(function(sh) {
       return sh.star + sh.name + '（' + sh.desc + '）';
     }).join('、');
-    narrative += '年生年四化：' + huaText + '。';
+    narrative += '生年四化：' + huaText + '。';
   }
 
   // 深层命宫解读
@@ -867,16 +867,16 @@ function generateZiWeiLifeReading(chart) {
     if (stageMainStar !== '无主星') {
       if (['紫微','天府','太阳','武曲','天梁'].indexOf(stageMainStar) >= 0) {
         luckLevel = '吉运';
-        luckDesc = '此限主星' + stageMainStar + '，' + stageStarInfo.nature + '，运势较佳';
+        luckDesc = '这步大限主星' + stageMainStar + '，' + stageStarInfo.nature + '，运势蛮不错的～';
       } else if (['贪狼','廉贞','破军','七杀','巨门'].indexOf(stageMainStar) >= 0) {
         luckLevel = '变动运';
-        luckDesc = '此限主星' + stageMainStar + '，' + stageStarInfo.nature + '，变动较多，需把握机遇';
+        luckDesc = '这步大限主星' + stageMainStar + '，' + stageStarInfo.nature + '，变动比较多，抓住机遇冲鸭～';
       } else {
         luckLevel = '平稳运';
-        luckDesc = '此限主星' + stageMainStar + '，' + stageStarInfo.nature + '，运势平稳';
+        luckDesc = '这步大限主星' + stageMainStar + '，' + stageStarInfo.nature + '，运势平稳，不急不躁';
       }
     } else {
-      luckDesc = '此限无主星坐守，运势随他宫影响而变';
+      luckDesc = '这步大限无主星坐守，运势看其他宫位的影响，灵活应对就好';
     }
 
     // 四化影响
@@ -895,7 +895,7 @@ function generateZiWeiLifeReading(chart) {
     // 煞星影响
     var shaInPalace = '';
     if (palace && palace.shaStars && palace.shaStars.length > 0) {
-      shaInPalace = '注意：' + palace.shaStars.map(function(s) { return s.name; }).join('、') + '入限，需谨慎';
+      shaInPalace = '留意：' + palace.shaStars.map(function(s) { return s.name; }).join('、') + '入限，稳一点别冲动';
     }
 
     lifeStages.push({
@@ -905,7 +905,7 @@ function generateZiWeiLifeReading(chart) {
       mainStar: stageMainStar,
       luckLevel: luckLevel,
       summary: luckDesc,
-      detail: shaInPalace || '无明显煞星干扰',
+      detail: shaInPalace || '没有煞星干扰，可以放心前行',
       isCurrent: isCurrent
     });
   }
@@ -927,21 +927,21 @@ function generateZiWeiLifeReading(chart) {
 
   // 命宫主星调理
   var mgImprovementMap = {
-    '紫微': '命宫紫微，宜培养领导力和格局观，多读书增长见识，避免孤高自傲',
-    '天机': '命宫天机，宜多学习思考，培养专长技能，避免想多做少',
-    '太阳': '命宫太阳，宜多行善积德，发挥博爱精神，注意劳逸结合',
-    '武曲': '命宫武曲，宜培养理财能力，注重人际沟通，避免过于刚硬',
-    '天同': '命宫天同，宜激发上进心，设定目标，避免过于安逸',
-    '廉贞': '命宫廉贞，宜注重情绪管理，培养正当兴趣，避免桃花纠纷',
-    '天府': '命宫天府，宜培养管理能力，稳健发展，适当拓展舒适圈',
-    '太阴': '命宫太阴，宜培养艺术修养，注重家庭，发挥柔和之力',
-    '贪狼': '命宫贪狼，宜培养专长，节制欲望，将交际能力用于正途',
-    '巨门': '命宫巨门，宜修炼口德，学习沟通技巧，避免是非口舌',
-    '天相': '命宫天相，宜培养辅佐之能，注重诚信，适合公务管理',
-    '天梁': '命宫天梁，宜培养正直品格，学习养生之道，逢凶化吉',
-    '七杀': '命宫七杀，宜培养耐心和谋略，避免冲动行事，适合开创',
-    '破军': '命宫破军，宜培养变通能力，学会止损，避免破坏性决策',
-    '无主星': '命宫无主星，性格多变，宜参考对宫和三方四正星曜，培养稳定性格'
+    '紫微': '命宫紫微，培养格局观和领导力，多读书长见识，别太孤高就好～',
+    '天机': '命宫天机，多学习多思考，培养一项专长技能，别只想不做哦～',
+    '太阳': '命宫太阳，多行善积德，发挥博爱精神，注意别太累着了～',
+    '武曲': '命宫武曲，培养理财能力，注重人际沟通，别太刚硬嘛～',
+    '天同': '命宫天同，激发一下上进心，设定目标，太安逸容易躺平～',
+    '廉贞': '命宫廉贞，注重情绪管理，培养正当爱好，小心桃花纠纷～',
+    '天府': '命宫天府，培养管理能力，稳健发展，适当突破舒适圈～',
+    '太阴': '命宫太阴，培养艺术修养，注重家庭，发挥柔和的力量～',
+    '贪狼': '命宫贪狼，培养专长，节制欲望，把交际天赋用在正道上～',
+    '巨门': '命宫巨门，修炼口德，学习沟通技巧，少些是非口舌～',
+    '天相': '命宫天相，培养辅佐能力，注重诚信，适合管理类工作～',
+    '天梁': '命宫天梁，培养正直品格，学点养生，自带逢凶化吉体质～',
+    '七杀': '命宫七杀，培养耐心和谋略，别冲动行事，适合开创新局面～',
+    '破军': '命宫破军，培养变通能力，学会止损，别做破坏性决策～',
+    '无主星': '命宫无主星，性格比较多变，参考对宫和三方四正星曜，培养稳定性～'
   };
   destinyImprovement.push({
     category: '命宫调理',
@@ -951,10 +951,10 @@ function generateZiWeiLifeReading(chart) {
   // 四化调理
   if (chart.siHuaList && chart.siHuaList.length > 0) {
     var huaAdvice = chart.siHuaList.map(function(sh) {
-      if (sh.name === '化禄') return sh.star + '化禄：把握财运机遇，积极经营' + sh.star + '所主之事';
-      if (sh.name === '化权') return sh.star + '化权：发挥权力和掌控力，但需适度';
-      if (sh.name === '化科') return sh.star + '化科：注重名声和学习，考试顺利';
-      if (sh.name === '化忌') return sh.star + '化忌：需注意' + sh.star + '所主方面的阻碍，宜化解执念';
+      if (sh.name === '化禄') return sh.star + '化禄：把握财运机遇，积极经营' + sh.star + '的事～';
+      if (sh.name === '化权') return sh.star + '化权：发挥掌控力，但别太强势，适度就好';
+      if (sh.name === '化科') return sh.star + '化科：注重名声和学习，考试顺利，学霸体质觉醒～';
+      if (sh.name === '化忌') return sh.star + '化忌：留意' + sh.star + '相关方面的阻碍，放下执念更轻松';
       return '';
     }).filter(Boolean).join('；');
     destinyImprovement.push({
@@ -974,8 +974,8 @@ function generateZiWeiLifeReading(chart) {
     shaNames.forEach(function(n) { if (uniqueShaNames.indexOf(n) < 0) uniqueShaNames.push(n); });
     destinyImprovement.push({
       category: '煞星化解',
-      advice: '命盘有' + uniqueShaNames.join('、') + '等煞星，需在对应宫位注意防范。' +
-        '可通过行善积德、修身养性来化解煞星负面影响。'
+      advice: '命盘有' + uniqueShaNames.join('、') + '等煞星，对应宫位多留意一下。' +
+        '多行善积德、修身养性，可以化解煞星的负面影响～'
     });
   }
 
@@ -988,8 +988,8 @@ function generateZiWeiLifeReading(chart) {
   else favDir = '北方';
   destinyImprovement.push({
     category: '方位调理',
-    advice: '五行局为' + chart.wuxingJu.element + '局，宜朝' + favDir + '发展，' +
-      '居住、办公宜选朝' + favDir + '的位置。'
+    advice: '五行局为' + chart.wuxingJu.element + '局，多往' + favDir + '发展，' +
+      '居住和办公选朝' + favDir + '的位置，好运自然来～'
   });
 
   return {
@@ -1083,7 +1083,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('紫微') && hasStarInMing('天府')) {
     patterns.push({
       name: '紫府同宫格',
-      desc: '紫微天府同坐命宫，至尊至富，主大贵大富，有领导才能与财富之象',
+      desc: '紫微天府同坐命宫，至尊至富，大贵大富，有领导才能与财富之象',
       level: '吉'
     });
   }
@@ -1093,7 +1093,7 @@ function determineZiWeiPattern(chart) {
       hasStarInSanFangSiZheng('命宫', '紫微') && hasStarInSanFangSiZheng('命宫', '天府')) {
     patterns.push({
       name: '紫府朝垣格',
-      desc: '紫微天府于三方四正朝拱命宫，主人有贵气，得人敬重，事业有成',
+      desc: '紫微天府于三方四正朝拱命宫，人有贵气，得人敬重，事业有成',
       level: '吉'
     });
   }
@@ -1102,7 +1102,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('紫微') && hasAuxInMing('左辅') && hasAuxInMing('右弼')) {
     patterns.push({
       name: '君臣庆会格',
-      desc: '紫微得左辅右弼同宫会照，如帝君得贤臣，主大富大贵，一生多助',
+      desc: '紫微得左辅右弼同宫会照，如帝君得贤臣，大富大贵，一生多助',
       level: '吉'
     });
   }
@@ -1113,7 +1113,7 @@ function determineZiWeiPattern(chart) {
       hasAuxInPos(neighbors[0], '右弼') && hasAuxInPos(neighbors[1], '左辅')) {
     patterns.push({
       name: '辅弼夹命格',
-      desc: '左辅右弼夹命宫，主一生多贵人相助，凡事逢凶化吉',
+      desc: '左辅右弼夹命宫，一生多贵人相助，凡事逢凶化吉',
       level: '吉'
     });
   }
@@ -1122,7 +1122,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInSanFangSiZheng('命宫', '天府') && hasStarInSanFangSiZheng('命宫', '天相')) {
     patterns.push({
       name: '府相朝垣格',
-      desc: '天府天相于三方四正朝拱命宫，主衣食丰足，有印信之权，为人稳重',
+      desc: '天府天相于三方四正朝拱命宫，衣食丰足，有印信之权，为人稳重',
       level: '吉'
     });
   }
@@ -1131,7 +1131,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('太阳') && hasStarInMing('太阴')) {
     patterns.push({
       name: '日月同宫格',
-      desc: '太阳太阴同坐命宫，阴阳调和，主聪慧多才，男女皆宜',
+      desc: '太阳太阴同坐命宫，阴阳调和，聪慧多才，男女皆宜',
       level: '吉'
     });
   }
@@ -1141,7 +1141,7 @@ function determineZiWeiPattern(chart) {
     if (hasStarInSanFangSiZheng('命宫', '太阳') && hasStarInSanFangSiZheng('命宫', '太阴')) {
       patterns.push({
         name: '日月照命格',
-        desc: '日月于三方四正照命，主人光明磊落，声名远播',
+        desc: '日月于三方四正照命，人光明磊落，声名远播',
         level: '吉'
       });
     }
@@ -1155,7 +1155,7 @@ function determineZiWeiPattern(chart) {
   if (hasJi && hasYue && hasTong && hasLiang) {
     patterns.push({
       name: '机月同梁格',
-      desc: '天机太阴天同天梁四星会照命宫，主聪明稳重，适合公职、企管、文职',
+      desc: '天机太阴天同天梁四星会照命宫，聪明稳重，适合公职、企管、文职',
       level: '吉'
     });
   }
@@ -1164,7 +1164,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('巨门') && hasStarInMing('天机')) {
     patterns.push({
       name: '巨机同临格',
-      desc: '巨门天机同坐命宫，主口才出众，智谋过人，适合法律、辩论、研究',
+      desc: '巨门天机同坐命宫，口才出众，智谋过人，适合法律、辩论、研究',
       level: '吉'
     });
   }
@@ -1176,14 +1176,14 @@ function determineZiWeiPattern(chart) {
     if (hasHuo) {
       patterns.push({
         name: '火贪格',
-        desc: '火星贪狼同宫，主突发横财，武职荣身，有将帅之气',
+        desc: '火星贪狼同宫，突发横财，武职荣身，有将帅之气',
         level: '吉'
       });
     }
     if (hasLing) {
       patterns.push({
         name: '铃贪格',
-        desc: '铃星贪狼同宫，主暗中有成，适合经营投机，有意外之财',
+        desc: '铃星贪狼同宫，暗中有成，适合经营投机，有意外之财',
         level: '吉'
       });
     }
@@ -1193,7 +1193,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('七杀') && mgBranch === '午') {
     patterns.push({
       name: '马头带箭格',
-      desc: '七杀在午宫坐命，主威权显赫，适合军警武职，有开创之能',
+      desc: '七杀在午宫坐命，威权显赫，适合军警武职，有开创之能',
       level: '吉'
     });
   }
@@ -1202,7 +1202,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('七杀') && (mgBranch === '子' || mgBranch === '寅')) {
     patterns.push({
       name: '七杀仰斗格',
-      desc: '七杀在' + mgBranch + '宫坐命，主有威权，适合军警开创性行业',
+      desc: '七杀在' + mgBranch + '宫坐命，有威权，适合军警开创性行业',
       level: '吉'
     });
   }
@@ -1211,7 +1211,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('紫微') && hasStarInMing('天相') && (mgBranch === '辰' || mgBranch === '戌')) {
     patterns.push({
       name: '紫相辰戌格',
-      desc: '紫微天相在' + mgBranch + '宫坐命，主权贵但有波折，中年发福',
+      desc: '紫微天相在' + mgBranch + '宫坐命，权贵但有波折，中年发福',
       level: '中'
     });
   }
@@ -1232,7 +1232,7 @@ function determineZiWeiPattern(chart) {
   if (hasHuaLu && hasHuaQuan && hasHuaKe) {
     patterns.push({
       name: '三奇嘉会格',
-      desc: '化禄化权化科三奇会入命宫三方四正，主一生荣华富贵，名望权力财富兼备',
+      desc: '化禄化权化科三奇会入命宫三方四正，一生荣华富贵，名望权力财富兼备',
       level: '吉'
     });
   }
@@ -1241,7 +1241,7 @@ function determineZiWeiPattern(chart) {
   if (hasHuaLu && hasHuaQuan && !hasHuaKe) {
     patterns.push({
       name: '权禄巡逢格',
-      desc: '化禄化权同会命宫，主富贵双全，有权有财，事业有成',
+      desc: '化禄化权同会命宫，富贵双全，有权有财，事业有成',
       level: '吉'
     });
   }
@@ -1251,7 +1251,7 @@ function determineZiWeiPattern(chart) {
       hasShaInPos(neighbors[0], '陀罗') && hasShaInPos(neighbors[1], '擎羊')) {
     patterns.push({
       name: '羊陀夹命格',
-      desc: '擎羊陀罗夹命宫，主一生多阻碍刑伤，需防意外纠纷',
+      desc: '擎羊陀罗夹命宫，一生多阻碍刑伤，需防意外纠纷',
       level: '凶'
     });
   }
@@ -1261,7 +1261,7 @@ function determineZiWeiPattern(chart) {
       hasShaInPos(neighbors[0], '地劫') && hasShaInPos(neighbors[1], '地空')) {
     patterns.push({
       name: '空劫夹命格',
-      desc: '地空地劫夹命宫，主一生破财耗损，精神空虚，需谨防投资损失',
+      desc: '地空地劫夹命宫，一生破财耗损，精神空虚，需谨防投资损失',
       level: '凶'
     });
   }
@@ -1270,7 +1270,7 @@ function determineZiWeiPattern(chart) {
   if (hasShaInMing('地空') && hasShaInMing('地劫')) {
     patterns.push({
       name: '两重华盖格',
-      desc: '地空地劫同坐命宫，主人聪明但精神空虚，适合宗教、艺术、哲学',
+      desc: '地空地劫同坐命宫，人聪明但精神空虚，适合宗教、艺术、哲学',
       level: '中'
     });
   }
@@ -1292,7 +1292,7 @@ function determineZiWeiPattern(chart) {
   if (hasYang && hasLiang2 && hasWenChang && hasLuCun) {
     patterns.push({
       name: '阳梁昌禄格',
-      desc: '太阳天梁文昌禄存会照命宫，主学业大成名扬天下，适合科举考试学术',
+      desc: '太阳天梁文昌禄存会照命宫，学业大成名扬天下，适合科举考试学术',
       level: '吉'
     });
   }
@@ -1301,7 +1301,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('贪狼') && hasShaInMing('陀罗')) {
     patterns.push({
       name: '贪狼陀罗格',
-      desc: '贪狼陀罗同坐命宫，主人多才多艺但感情纠葛，宜从事文艺或投机行业',
+      desc: '贪狼陀罗同坐命宫，人多才多艺但感情纠葛，宜从事文艺或投机行业',
       level: '中'
     });
   }
@@ -1310,7 +1310,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('贪狼') && hasShaInMing('火星') && hasShaInMing('铃星')) {
     patterns.push({
       name: '贪火铃格',
-      desc: '贪狼同会火星铃星，主突发横财，但需把握时机，过则反凶',
+      desc: '贪狼同会火星铃星，突发横财，但需把握时机，过则反凶',
       level: '中'
     });
   }
@@ -1325,7 +1325,7 @@ function determineZiWeiPattern(chart) {
   if (hasLianZhen && hasShaInMing('擎羊')) {
     patterns.push({
       name: '刑囚夹命格',
-      desc: '天刑廉贞夹命宫，主多是非官司，需防法律纠纷',
+      desc: '天刑廉贞夹命宫，多是非官司，需防法律纠纷',
       level: '凶'
     });
   }
@@ -1334,7 +1334,7 @@ function determineZiWeiPattern(chart) {
   if (hasAuxInMing('文昌') && hasAuxInMing('文曲')) {
     patterns.push({
       name: '文桂文华格',
-      desc: '文昌文曲同坐命宫，主文才出众，学业有成，适合文化教育',
+      desc: '文昌文曲同坐命宫，文才出众，学业有成，适合文化教育',
       level: '吉'
     });
   }
@@ -1343,7 +1343,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('贪狼') && hasStarInMing('武曲')) {
     patterns.push({
       name: '贪武同行格',
-      desc: '贪狼武曲同坐命宫，主有将帅之才，文武双全，适合军政商界',
+      desc: '贪狼武曲同坐命宫，有将帅之才，文武双全，适合军政商界',
       level: '吉'
     });
   }
@@ -1353,7 +1353,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('太阳') && (mgBranch === '未' || mgBranch === '申')) {
     patterns.push({
       name: '日月反背格（太阳）',
-      desc: '太阳在' + mgBranch + '宫，日落西山之象，主辛劳多劳，中年后好转',
+      desc: '太阳在' + mgBranch + '宫，日落西山之象，辛劳多劳，中年后好转',
       level: '中'
     });
   }
@@ -1362,7 +1362,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('紫微') && hasStarInMing('七杀')) {
     patterns.push({
       name: '紫杀同临格',
-      desc: '紫微七杀同坐命宫，主权威显赫，有开创精神，适合创业领袖',
+      desc: '紫微七杀同坐命宫，权威显赫，有开创精神，适合创业领袖',
       level: '吉'
     });
   }
@@ -1371,7 +1371,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('紫微') && hasStarInMing('破军')) {
     patterns.push({
       name: '紫破同临格',
-      desc: '紫微破军同坐命宫，主破旧立新，有变革之能，适合创新行业',
+      desc: '紫微破军同坐命宫，破旧立新，有变革之能，适合创新行业',
       level: '中'
     });
   }
@@ -1380,7 +1380,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('天机') && hasStarInMing('巨门')) {
     patterns.push({
       name: '机巨同临格',
-      desc: '天机巨门同坐命宫，主聪明善辩，但多疑多虑，适合研究法律',
+      desc: '天机巨门同坐命宫，聪明善辩，但多疑多虑，适合研究法律',
       level: '中'
     });
   }
@@ -1389,7 +1389,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('天同') && hasStarInMing('巨门')) {
     patterns.push({
       name: '同巨同宫格',
-      desc: '天同巨门同坐命宫，主人温和但有口舌之忧，需注意沟通',
+      desc: '天同巨门同坐命宫，人温和但有口舌之忧，需注意沟通',
       level: '中'
     });
   }
@@ -1398,7 +1398,7 @@ function determineZiWeiPattern(chart) {
   if (hasStarInMing('武曲') && hasStarInMing('贪狼')) {
     patterns.push({
       name: '武贪同宫格',
-      desc: '武曲贪狼同坐命宫，主有偏财运，适合经营投机，晚发之命',
+      desc: '武曲贪狼同坐命宫，有偏财运，适合经营投机，晚发之命',
       level: '吉'
     });
   }
