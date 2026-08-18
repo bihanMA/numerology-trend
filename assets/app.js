@@ -16,7 +16,9 @@
     yearlyTrends: [],
     radarChart: null,
     trendChart: null,
-    radarNeedsRender: false
+    radarNeedsRender: false,
+    lastXLRResult: null,
+    lastXLRInputs: null
   };
 
   // ============ 工具函数 ============
@@ -43,119 +45,182 @@
     };
   }
 
-  // ============ 主题切换 ============
+  // ============ 铜钱动画 + 顶部栏 ============
   var PALACE_IDS = ['pg-daan','pg-liulian','pg-suxi','pg-chikou','pg-xiaoji','pg-kongwang'];
 
-  function applyTheme(theme) {
-    if (theme === 'custom') {
-      document.documentElement.removeAttribute('data-theme');
-      document.querySelectorAll('.theme-btn').forEach(function(b) { b.classList.remove('active'); });
-      $('custom-bg-btn').classList.add('active');
-    } else {
-      document.documentElement.setAttribute('data-theme', theme);
-      document.body.style.removeProperty('background-image');
-      document.body.style.removeProperty('background-size');
-      document.body.style.removeProperty('background-position');
-      document.body.style.removeProperty('background-attachment');
-      document.querySelectorAll('.theme-btn').forEach(function(b) { b.classList.remove('active'); });
-      var btn = document.querySelector('.theme-btn[data-theme="' + theme + '"]');
-      if (btn) btn.classList.add('active');
-    }
-    // 重新渲染图表以更新颜色
-    setTimeout(function() {
-      if (state.radarChart) renderRadarChart();
-      if (state.trendChart) renderTrendChart();
-    }, 50);
+  function playCoinSound() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.12, 0.24].forEach(function(delay, i) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(880 - i * 80, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.15);
+      });
+    } catch(e) {}
   }
 
-  function setupThemeSwitcher() {
-    // 默认浅粉主题
-    var saved = null;
-    try { saved = localStorage.getItem('xlr-theme'); } catch(e) {}
-    if (saved === 'custom') {
-      var bgUrl = null;
-      try { bgUrl = localStorage.getItem('xlr-bg-url'); } catch(e) {}
-      if (bgUrl) {
-        document.documentElement.removeAttribute('data-theme');
-        document.body.style.backgroundImage = 'url(' + bgUrl + ')';
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        $('custom-bg-btn').classList.add('active');
-      } else {
-        applyTheme('light-pink');
-      }
-    } else if (saved && saved !== 'light-pink') {
-      applyTheme(saved);
-    } else {
-      applyTheme('light-pink');
+  function playCoinAnimation(callback) {
+    var overlay = $('coin-overlay');
+    var textEl = $('coin-text');
+    if (!overlay) { if (callback) callback(); return; }
+
+    overlay.classList.remove('fade-out');
+    overlay.classList.add('show');
+    playCoinSound();
+
+    var texts = ['铜钱落盘，正在起卦…', '卦象已成'];
+    textEl.textContent = texts[0];
+    setTimeout(function() { textEl.textContent = texts[1]; }, 1400);
+
+    setTimeout(function() {
+      overlay.classList.add('fade-out');
+      setTimeout(function() {
+        overlay.classList.remove('show', 'fade-out');
+        if (callback) callback();
+      }, 500);
+    }, 2000);
+  }
+
+  function setupTopBar() {
+    // 语言切换
+    var langBtn = $('lang-toggle');
+    if (langBtn) {
+      langBtn.addEventListener('click', function() {
+        I18N.toggle();
+      });
     }
 
-    // 主题按钮
-    document.querySelectorAll('.theme-btn[data-theme]').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var theme = btn.getAttribute('data-theme');
-        applyTheme(theme);
-        try { localStorage.setItem('xlr-theme', theme); } catch(e) {}
-        // 关闭设置面板
-        $('theme-settings').classList.remove('show');
+    // 设置按钮
+    var settingsBtn = $('settings-btn');
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', function() {
+        var modal = $('settings-modal');
+        if (!modal) return;
+        modal.classList.add('show');
+        var urlInput = $('share-url-input');
+        if (urlInput) urlInput.value = window.location.href;
+        var qrArea = $('settings-qr-area');
+        if (qrArea && qrArea.children.length === 0) {
+          var img = document.createElement('img');
+          img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(window.location.href);
+          img.alt = 'QR Code';
+          img.style.cssText = 'width:180px;height:180px;border-radius:8px;border:1px solid var(--rule);';
+          qrArea.appendChild(img);
+        }
+      });
+    }
+
+    // 设置弹窗关闭
+    var settingsClose = $('settings-close');
+    if (settingsClose) {
+      settingsClose.addEventListener('click', function() {
+        $('settings-modal').classList.remove('show');
+      });
+    }
+    var settingsModal = $('settings-modal');
+    if (settingsModal) {
+      settingsModal.addEventListener('click', function(e) {
+        if (e.target === settingsModal) settingsModal.classList.remove('show');
+      });
+    }
+    var shareCopy = $('share-copy-btn');
+    if (shareCopy) {
+      shareCopy.addEventListener('click', function() {
+        var input = $('share-url-input');
+        if (input) {
+          input.select();
+          try { document.execCommand('copy'); } catch(e) {}
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(input.value);
+          }
+          shareCopy.textContent = '已复制';
+          setTimeout(function() { shareCopy.textContent = '复制'; }, 2000);
+        }
+      });
+    }
+
+    // 主题颜色切换
+    var themeSwatches = document.querySelectorAll('.theme-swatch');
+    var themeColors = {
+      pink:   { accent: '#9a4a2a', light: '#c47544', accent2: '#6b3a1f', accent2l: '#a06030', rgb: '154,74,42',  rgb2: '107,58,31' },
+      green:  { accent: '#3a6a2a', light: '#5a8a3a', accent2: '#2a4a1f', accent2l: '#4a6a30', rgb: '58,106,42',   rgb2: '42,74,31' },
+      purple: { accent: '#6a4a8a', light: '#8a6aaa', accent2: '#4a3a6f', accent2l: '#6a5a90', rgb: '106,74,138', rgb2: '74,58,111' },
+      blue:   { accent: '#3a5a8a', light: '#5a7aaa', accent2: '#2a3a6f', accent2l: '#4a5a90', rgb: '58,90,138',  rgb2: '42,58,111' },
+      orange: { accent: '#b06020', light: '#c47a30', accent2: '#8a4010', accent2l: '#a05a20', rgb: '176,96,32',   rgb2: '138,64,16' },
+      teal:   { accent: '#2a7a7a', light: '#3a8a8a', accent2: '#1a5a5a', accent2l: '#2a6a6a', rgb: '42,122,122',  rgb2: '26,90,90' }
+    };
+    themeSwatches.forEach(function(swatch) {
+      swatch.addEventListener('click', function() {
+        var themeName = swatch.getAttribute('data-theme');
+        var c = themeColors[themeName];
+        if (!c) return;
+        var root = document.documentElement;
+        root.style.setProperty('--accent', c.accent);
+        root.style.setProperty('--accent-light', c.light);
+        root.style.setProperty('--accent2', c.accent2);
+        root.style.setProperty('--accent2-light', c.accent2l);
+        root.style.setProperty('--accent-rgb', c.rgb);
+        root.style.setProperty('--accent2-rgb', c.rgb2);
+        themeSwatches.forEach(function(s) { s.classList.remove('active'); });
+        swatch.classList.add('active');
+        try { localStorage.setItem('theme-color', themeName); } catch(e) {}
       });
     });
-
-    // 自定义背景按钮 → 切换设置面板
-    $('custom-bg-btn').addEventListener('click', function(e) {
-      e.stopPropagation();
-      $('theme-settings').classList.toggle('show');
-    });
-
-    // 点击外部关闭设置面板
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.theme-switcher')) {
-        $('theme-settings').classList.remove('show');
+    try {
+      var savedTheme = localStorage.getItem('theme-color');
+      if (savedTheme && themeColors[savedTheme]) {
+        var swatchToActivate = document.querySelector('.theme-swatch[data-theme="' + savedTheme + '"]');
+        if (swatchToActivate) swatchToActivate.click();
       }
-    });
+    } catch(e) {}
 
-    // 上传背景图片
-    $('bg-upload-input').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var url = ev.target.result;
-        document.documentElement.removeAttribute('data-theme');
-        document.body.style.backgroundImage = 'url(' + url + ')';
+    // 背景图片上传
+    var bgUploadBtn = $('bg-upload-btn');
+    var bgUpload = $('bg-upload');
+    var bgResetBtn = $('bg-reset-btn');
+    if (bgUploadBtn && bgUpload) {
+      bgUploadBtn.addEventListener('click', function() { bgUpload.click(); });
+    }
+    if (bgUpload) {
+      bgUpload.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          document.body.style.backgroundImage = 'url(' + ev.target.result + ')';
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundPosition = 'center';
+          document.body.style.backgroundAttachment = 'fixed';
+          try { localStorage.setItem('bg-image', ev.target.result); } catch(e) {}
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    if (bgResetBtn) {
+      bgResetBtn.addEventListener('click', function() {
+        document.body.style.backgroundImage = '';
+        document.body.style.backgroundSize = '';
+        document.body.style.backgroundPosition = '';
+        document.body.style.backgroundAttachment = '';
+        try { localStorage.removeItem('bg-image'); } catch(e) {}
+      });
+    }
+    try {
+      var savedBg = localStorage.getItem('bg-image');
+      if (savedBg) {
+        document.body.style.backgroundImage = 'url(' + savedBg + ')';
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
         document.body.style.backgroundAttachment = 'fixed';
-        document.querySelectorAll('.theme-btn').forEach(function(b) { b.classList.remove('active'); });
-        $('custom-bg-btn').classList.add('active');
-        try {
-          localStorage.setItem('xlr-theme', 'custom');
-          localStorage.setItem('xlr-bg-url', url);
-        } catch(e) {}
-        // 重新渲染图表
-        setTimeout(function() {
-          if (state.radarChart) renderRadarChart();
-          if (state.trendChart) renderTrendChart();
-        }, 50);
-        $('theme-settings').classList.remove('show');
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // 清除自定义背景
-    $('bg-clear-btn').addEventListener('click', function() {
-      document.body.style.removeProperty('background-image');
-      document.body.style.removeProperty('background-size');
-      document.body.style.removeProperty('background-position');
-      document.body.style.removeProperty('background-attachment');
-      try {
-        localStorage.removeItem('xlr-bg-url');
-        localStorage.setItem('xlr-theme', 'light-pink');
-      } catch(e) {}
-      applyTheme('light-pink');
-      $('theme-settings').classList.remove('show');
-    });
+      }
+    } catch(e) {}
   }
 
   function highlightPalmPalace(palaceName) {
@@ -172,6 +237,170 @@
       var el = document.getElementById(id);
       if (el) el.classList.add('active');
     }
+  }
+
+  // ============ 合盘模块 ============
+
+  function setupCompatibility() {
+    var btn = $('btn-compat');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      if (!state.baziChart || !state.birthInfo) {
+        alert('请先在上方完成本人排盘推演，再进行合盘～');
+        return;
+      }
+
+      var year = parseInt($('compat-year').value);
+      var month = parseInt($('compat-month').value);
+      var day = parseInt($('compat-day').value);
+      var hour = parseInt($('compat-hour').value);
+      var gender = $('compat-gender').value;
+
+      if (!year || !month || !day || isNaN(hour)) {
+        alert('另一方生辰信息填写不完整，请检查～');
+        return;
+      }
+
+      playCoinAnimation(function() {
+        try {
+          var chartB = buildBaZiChart(year, month, day, hour, gender);
+          var infoA = state.birthInfo;
+          var infoB = { year: year, month: month, day: day, hour: hour, gender: gender };
+          var result = calculateCompatibility(state.baziChart, chartB, infoA, infoB);
+          renderCompatibility(result);
+        } catch(e) {
+          console.error('合盘计算失败:', e);
+          $('compat-result-area').innerHTML = '<div class="empty-state"><div class="es-icon">!</div>合盘计算出错了，请检查生辰信息是否正确</div>';
+        }
+      });
+    });
+  }
+
+  function renderCompatibility(result) {
+    var area = $('compat-result-area');
+    if (!area) return;
+
+    var score = result.score;
+    var circumference = 2 * Math.PI * 32;
+    var dashOffset = circumference * (1 - score / 100);
+
+    var scoreColor = score >= 65 ? '#5a7a3a' : score >= 50 ? '#9a4a2a' : '#a04020';
+
+    var html = '<div class="compat-result">';
+
+    // 评分环
+    html += '<div class="compat-score-box">';
+    html += '<div class="compat-score-ring">';
+    html += '<svg viewBox="0 0 80 80">';
+    html += '<circle cx="40" cy="40" r="32" fill="none" stroke="#e8e5e0" stroke-width="4"/>';
+    html += '<circle cx="40" cy="40" r="32" fill="none" stroke="' + scoreColor + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '"/>';
+    html += '</svg>';
+    html += '<span class="score-num" style="color:' + scoreColor + '">' + score + '</span>';
+    html += '</div>';
+    html += '<div class="compat-score-label">' + result.levelLabel + '</div>';
+    html += '</div>';
+
+    // 双方信息
+    html += '<div class="compat-persons">';
+    html += '<div class="compat-person"><span class="pname">本人</span> <span class="pdm">' + result.personA.dayMaster + '（' + result.personA.element + '）</span></div>';
+    html += '<span class="compat-vs">vs</span>';
+    html += '<div class="compat-person"><span class="pname">另一方</span> <span class="pdm">' + result.personB.dayMaster + '（' + result.personB.element + '）</span></div>';
+    html += '</div>';
+
+    // 日主关系
+    html += '<div class="compat-dm-interaction">';
+    html += '<div class="cdi-label">日主关系：' + result.dmRelation.type + '</div>';
+    html += result.dmRelation.desc;
+    html += '</div>';
+
+    // 板块一：契合的方面
+    var harmony = result.sections.harmony;
+    html += '<div class="compat-section expanded" id="compat-sec-1">';
+    html += '<div class="compat-section-header" data-section="1"><span class="cs-icon">' + harmony.icon + '</span><span class="cs-title">' + harmony.title + '</span><span class="cs-arrow">▼</span></div>';
+    html += '<div class="compat-section-body">';
+    html += '<div class="compat-section-summary">' + harmony.summary + '</div>';
+    html += '<div class="compat-aspects-grid">';
+    harmony.aspects.forEach(function(a) {
+      html += '<div class="compat-aspect-item">';
+      html += '<div class="cai-label">' + a.area + '</div>';
+      html += '<div class="cai-detail">' + a.detail + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // 板块二：不合拍的方面
+    var friction = result.sections.friction;
+    html += '<div class="compat-section" id="compat-sec-2">';
+    html += '<div class="compat-section-header" data-section="2"><span class="cs-icon">' + friction.icon + '</span><span class="cs-title">' + friction.title + '</span><span class="cs-arrow">▼</span></div>';
+    html += '<div class="compat-section-body">';
+    html += '<div class="compat-section-summary">' + friction.summary + '</div>';
+    friction.frictions.forEach(function(f) {
+      html += '<div class="compat-friction-item">';
+      html += '<div class="cfi-label">' + f.area + '</div>';
+      html += '<div class="cfi-detail">' + f.detail + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+
+    // 板块三：五行互补分析
+    var elements = result.sections.elements;
+    html += '<div class="compat-section" id="compat-sec-3">';
+    html += '<div class="compat-section-header" data-section="3"><span class="cs-icon">' + elements.icon + '</span><span class="cs-title">' + elements.title + '</span><span class="cs-arrow">▼</span></div>';
+    html += '<div class="compat-section-body">';
+    html += '<div class="compat-section-summary">' + elements.summary + '</div>';
+
+    html += '<div class="compat-dm-interaction"><div class="cdi-label">日主五行互动</div>' + elements.dmInteraction + '</div>';
+
+    html += '<div style="font-size:0.78rem;font-weight:700;color:var(--green);margin:0.5rem 0 0.3rem;">互补的五行</div>';
+    elements.complement.forEach(function(c) {
+      html += '<div class="compat-element-item comp"><span class="cei-label">' + c.element + '</span> ' + c.detail + '</div>';
+    });
+
+    html += '<div style="font-size:0.78rem;font-weight:700;color:var(--accent);margin:0.5rem 0 0.3rem;">互耗的五行</div>';
+    elements.consume.forEach(function(c) {
+      html += '<div class="compat-element-item cons"><span class="cei-label">' + c.element + '</span> ' + c.detail + '</div>';
+    });
+
+    html += '</div>';
+    html += '</div>';
+
+    // 板块四：实际磨合建议
+    var advice = result.sections.advice;
+    html += '<div class="compat-section" id="compat-sec-4">';
+    html += '<div class="compat-section-header" data-section="4"><span class="cs-icon">' + advice.icon + '</span><span class="cs-title">' + advice.title + '</span><span class="cs-arrow">▼</span></div>';
+    html += '<div class="compat-section-body">';
+    html += '<div class="compat-section-summary">' + advice.summary + '</div>';
+    html += '<ul class="compat-tips-list">';
+    advice.tips.forEach(function(t) {
+      html += '<li>' + t + '</li>';
+    });
+    html += '</ul>';
+    html += '</div>';
+    html += '</div>';
+
+    // 声明
+    html += '<div class="compat-disclaimer">合盘分析仅基于八字五行民俗文化，不构成任何宿命定断。关系好坏重在双方用心经营，仅供参考～</div>';
+
+    html += '</div>';
+
+    area.innerHTML = html;
+    area.style.animation = 'compatFadeIn 0.5s ease';
+
+    // 如果当前是繁体模式，转换新渲染的内容
+    if (window.I18N && I18N.isTraditional()) {
+      I18N.convertElement(area);
+    }
+
+    // 绑定折叠/展开
+    area.querySelectorAll('.compat-section-header').forEach(function(header) {
+      header.addEventListener('click', function() {
+        var section = header.parentElement;
+        section.classList.toggle('expanded');
+      });
+    });
   }
 
   // ============ Tab 通用控制 ============
@@ -210,21 +439,66 @@
 
   function setupXiaoLiuRen() {
     $('xlr-now').addEventListener('click', function() {
-      var beijing = getBeijingTime();
-      var month = beijing.month;
-      var day = beijing.day;
-      var shichenIdx = getShichenFromHour(beijing.hour);
-      var hour = shichenIdx + 1;
-      var result = calculateXiaoLiuRen(month, day, hour);
-      renderXLRResult(result);
+      playCoinAnimation(function() {
+        var beijing = getBeijingTime();
+        var month = beijing.month;
+        var day = beijing.day;
+        var shichenIdx = getShichenFromHour(beijing.hour);
+        var hour = shichenIdx + 1;
+        state.lastXLRInputs = { type: 'time' };
+        var result = calculateXiaoLiuRen(month, day, hour);
+        renderXLRResult(result);
+      });
     });
 
     $('xlr-calc').addEventListener('click', function() {
-      var n1 = parseInt($('xlr-n1').value) || 1;
-      var n2 = parseInt($('xlr-n2').value) || 1;
-      var n3 = parseInt($('xlr-n3').value) || 1;
-      var result = calculateFromThreeNumbers(n1, n2, n3);
-      renderXLRResult(result);
+      playCoinAnimation(function() {
+        var n1 = parseInt($('xlr-n1').value) || 1;
+        var n2 = parseInt($('xlr-n2').value) || 1;
+        var n3 = parseInt($('xlr-n3').value) || 1;
+        state.lastXLRInputs = { type: 'numbers', n1: n1, n2: n2, n3: n3 };
+        var result = calculateFromThreeNumbers(n1, n2, n3);
+        renderXLRResult(result);
+      });
+    });
+
+    // 再占一卦
+    $('xlr-redivine').addEventListener('click', function() {
+      playCoinAnimation(function() {
+        if (state.lastXLRInputs) {
+          var inp = state.lastXLRInputs;
+          var result;
+          if (inp.type === 'numbers') {
+            result = calculateFromThreeNumbers(inp.n1, inp.n2, inp.n3);
+          } else {
+            var beijing = getBeijingTime();
+            var shichenIdx = getShichenFromHour(beijing.hour);
+            var hour = shichenIdx + 1;
+            result = calculateXiaoLiuRen(beijing.month, beijing.day, hour);
+          }
+          renderXLRResult(result);
+        } else {
+          var beijing = getBeijingTime();
+          var shichenIdx = getShichenFromHour(beijing.hour);
+          var hour = shichenIdx + 1;
+          var result = calculateXiaoLiuRen(beijing.month, beijing.day, hour);
+          renderXLRResult(result);
+        }
+      });
+    });
+
+    // 随机起卦
+    $('xlr-random').addEventListener('click', function() {
+      playCoinAnimation(function() {
+        var n1 = Math.floor(Math.random() * 9) + 1;
+        var n2 = Math.floor(Math.random() * 9) + 1;
+        var n3 = Math.floor(Math.random() * 9) + 1;
+        $('xlr-n1').value = n1;
+        $('xlr-n2').value = n2;
+        $('xlr-n3').value = n3;
+        var result = calculateFromThreeNumbers(n1, n2, n3);
+        renderXLRResult(result);
+      });
     });
 
     // Enter key support
@@ -250,6 +524,9 @@
     var narrative = generateXLRNarrative(result, state.xlrCategory);
     var container = $('xlr-result');
     container.innerHTML = '';
+    container.classList.remove('result-fade-in');
+    void container.offsetWidth;
+    container.classList.add('result-fade-in');
 
     // 高亮掌诀图中的宫位
     highlightPalmPalace(narrative.resultName);
@@ -296,6 +573,10 @@
       '<div class="xlr-source" style="color:' + getCSS('--accent') + '">提示：' +
         narrative.interpResult + '。' + narrative.interpretation + '</div>';
     container.appendChild(interpDiv);
+
+    // 显示操作按钮
+    var actions = $('xlr-actions');
+    if (actions) actions.style.display = 'flex';
   }
 
   // ============ 八字 模块 ============
@@ -1289,66 +1570,25 @@
     container.appendChild(impDiv);
   }
 
-  // ============ 分享功能 ============
-  function setupShare() {
-    var shareBtn = $('share-btn');
-    var modal = $('share-modal');
-    var closeBtn = $('share-close');
-    var copyBtn = $('share-copy-btn');
-    var urlInput = $('share-url-input');
-    var qrArea = $('share-qr-area');
-
-    shareBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var url = window.location.href;
-      urlInput.value = url;
-      var encodedUrl = encodeURIComponent(url);
-      qrArea.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' +
-        encodedUrl + '" alt="扫码打开" style="border:1px solid var(--rule)" ' +
-        'onerror="this.style.display=\'none\';var d=document.createElement(\'div\');d.style.cssText=\'font-size:0.8rem;color:#999;text-align:center;padding:1rem;width:200px\';d.innerHTML=\'无法生成二维码<br>请复制下方链接分享\';this.parentNode.appendChild(d)">';
-      modal.classList.add('show');
-    });
-
-    closeBtn.addEventListener('click', function() {
-      modal.classList.remove('show');
-    });
-
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) modal.classList.remove('show');
-    });
-
-    copyBtn.addEventListener('click', function() {
-      urlInput.select();
-      try {
-        document.execCommand('copy');
-        copyBtn.textContent = '已复制';
-        setTimeout(function() { copyBtn.textContent = '复制'; }, 2000);
-      } catch(err) {
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(urlInput.value).then(function() {
-            copyBtn.textContent = '已复制';
-            setTimeout(function() { copyBtn.textContent = '复制'; }, 2000);
-          });
-        }
-      }
-    });
-  }
-
   // ============ 初始化 ============
   function init() {
-    setupThemeSwitcher();
+    setupTopBar();
+    I18N.init();
     setupXiaoLiuRen();
+    setupCompatibility();
     setupTabs('bazi-tabs');
     setupTabs('zw-tabs');
-    setupShare();
 
     $('btn-calculate').addEventListener('click', function() {
-      calculateAll();
-      var beijing = getBeijingTime();
-      var shichenIdx = getShichenFromHour(beijing.hour);
-      var hour = shichenIdx + 1;
-      var result = calculateXiaoLiuRen(beijing.month, beijing.day, hour);
-      renderXLRResult(result);
+      playCoinAnimation(function() {
+        calculateAll();
+        var beijing = getBeijingTime();
+        var shichenIdx = getShichenFromHour(beijing.hour);
+        var hour = shichenIdx + 1;
+        state.lastXLRInputs = { type: 'time' };
+        var result = calculateXiaoLiuRen(beijing.month, beijing.day, hour);
+        renderXLRResult(result);
+      });
     });
 
     // 自动排盘
@@ -1358,6 +1598,7 @@
     var beijing = getBeijingTime();
     var shichenIdx = getShichenFromHour(beijing.hour);
     var hour = shichenIdx + 1;
+    state.lastXLRInputs = { type: 'time' };
     var result = calculateXiaoLiuRen(beijing.month, beijing.day, hour);
     renderXLRResult(result);
   }
