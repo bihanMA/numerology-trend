@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>命理趋势参考 — 小六壬 · 八字 · 紫微斗数</title>
+<style>
+@font-face {
+  font-family: 'Lora';
+  src: url('./_shared/fonts/Lora-Regular.ttf') format('truetype');
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('./_shared/fonts/Lora-Bold.ttf') format('truetype');
+  font-weight: 700; font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('./_shared/fonts/Outfit-Regular.ttf') format('truetype');
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('./_shared/fonts/Outfit-Bold.ttf') format('truetype');
+  font-weight: 700; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrainsMono';
+  src: url('./_shared/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400; font-display: swap;
+}
+
+:root {
+  /* 默认浅粉主题 */
+  --bg: #fef5f8;
+  --bg2: #fce4ec;
+  --bg3: #ffffff;
+  --ink: #4a2c3a;
+  --muted: #9a7a8a;
+  --rule: #f0c8d8;
+  --accent: #e91e63;
+  --accent-light: #f8bbd0;
+  --accent2: #c2185b;
+  --accent2-light: #e1bee7;
+  --accent-rgb: 233,30,99;
+  --accent2-rgb: 194,24,91;
+  --green: #4caf50;
+  --red: #e53935;
+  --shadow: 0 2px 16px rgba(var(--accent-rgb),0.08);
+  --shadow-sm: 0 1px 8px rgba(var(--accent-rgb),0.06);
+  --radius: 16px;
+  --radius-sm: 8px;
+}
+
+/* 淡绿主题 */
+[data-theme="light-green"] {
+  --bg: #f5f9f5;
+  --bg2: #e8f5e9;
+  --bg3: #ffffff;
+  --ink: #2e3b2e;
+  --muted: #7a8a7a;
+  --rule: #c8e6c9;
+  --accent: #4caf50;
+  --accent-light: #a5d6a7;
+  --accent2: #2e7d32;
+  --accent2-light: #c8e6c9;
+  --accent-rgb: 76,175,80;
+  --accent2-rgb: 46,125,50;
+  --green: #2e7d32;
+  --red: #c62828;
+  --shadow: 0 2px 16px rgba(var(--accent-rgb),0.08);
+  --shadow-sm: 0 1px 8px rgba(var(--accent-rgb),0.06);
+}
+
+/* 浅紫主题 */
+[data-theme="light-purple"] {
+  --bg: #f6f3fa;
+  --bg2: #ede7f6;
+  --bg3: #ffffff;
+  --ink: #3a2e4a;
+  --muted: #8a7a9a;
+  --rule: #d1c4e9;
+  --accent: #9c27b0;
+  --accent-light: #ce93d8;
+  --accent2: #6a1b9a;
+  --accent2-light: #b39ddb;
+  --accent-rgb: 156,39,176;
+  --accent2-rgb: 106,27,154;
+  --green: #4caf50;
+  --red: #c62828;
+  --shadow: 0 2px 16px rgba(var(--accent-rgb),0.08);
+  --shadow-sm: 0 1px 8px rgba(var(--accent-rgb),0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Outfit', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* 全局过渡：切换主题时颜色平滑变化 */
+.module-card, .birth-input, .bazi-pillar, .bazi-info-item, .gc-item, .gc-detail,
+.guidance-card, .score-card, .zw-cell, .zw-narrative, .zw-fortune-item, .zw-daily-header,
+.xlr-main-result, .xlr-verse, .xlr-interp, .xlr-cat-btn, .year-btn, .tab-btn,
+.input-group input, .input-group select, .fe-item, .btn-primary, .xlr-btn,
+.app-footer, .theme-switch-panel, .theme-btn {
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease,
+              box-shadow 0.4s ease, border 0.4s ease;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem;
+}
+
+/* === Header === */
+.app-header {
+  text-align: center;
+  padding: 1.5rem 0 1rem;
+}
+.app-header .title {
+  font-family: 'Lora', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.app-header .title span { color: var(--accent); }
+.app-header .subtitle {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+/* === Birth Input === */
+.birth-input {
+  background: var(--bg3);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.input-group label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+.input-group input, .input-group select {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: 'JetBrainsMono', monospace;
+  background: var(--bg);
+  color: var(--ink);
+  width: 90px;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+.input-group input:focus, .input-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.btn-primary {
+  padding: 0.55rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(var(--accent-rgb),0.3); }
+.btn-primary:active { transform: translateY(0); }
+
+/* === Module Card === */
+.module-card {
+  background: var(--bg3);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+}
+.module-header {
+  padding: 1rem 1.5rem 0.5rem;
+}
+.module-header .m-title {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.module-header .m-title .badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 12px;
+  background: var(--bg2);
+  color: var(--muted);
+  font-weight: 400;
+  font-family: 'Outfit', sans-serif;
+}
+.module-header .m-title .num {
+  font-size: 0.75rem;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrainsMono', monospace;
+}
+.module-header .m-subtitle {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+  padding-left: 30px;
+}
+
+/* === Tabs === */
+.tab-bar {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.5rem 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: 0.35rem 0.9rem;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.15s;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+}
+.tab-btn:hover { color: var(--ink); background: var(--bg2); }
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  font-weight: 700;
+}
+.tab-content { display: none; padding: 1.2rem 1.5rem; }
+.tab-content.active { display: block; }
+
+/* === Xiao Liu Ren === */
+.xlr-input {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0.5rem 0 1rem;
+}
+.xlr-input .xlr-btn {
+  padding: 0.5rem 1.2rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: transform 0.15s;
+}
+.xlr-input .xlr-btn:hover { transform: translateY(-1px); }
+.xlr-input .xlr-or {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.xlr-input .xlr-nums {
+  display: flex;
+  gap: 0.3rem;
+}
+.xlr-input .xlr-nums input {
+  width: 50px;
+  text-align: center;
+  padding: 0.5rem 0.3rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrainsMono', monospace;
+  font-size: 1rem;
+  background: var(--bg);
+}
+
+.xlr-category-tabs {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.5rem 0 1rem;
+  flex-wrap: wrap;
+}
+.xlr-cat-btn {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--rule);
+  background: var(--bg3);
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 20px;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.15s;
+}
+.xlr-cat-btn:hover { border-color: var(--accent); color: var(--ink); }
+.xlr-cat-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.xlr-result {
+  text-align: center;
+  padding: 1rem 0;
+}
+.xlr-three-trans {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.xlr-trans-item {
+  text-align: center;
+  min-width: 90px;
+}
+.xlr-trans-item .trans-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.xlr-trans-item .trans-name {
+  font-family: 'Lora', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.xlr-trans-item .trans-arrow {
+  font-size: 1.2rem;
+  color: var(--muted);
+  align-self: center;
+}
+
+.xlr-main-result {
+  margin: 1.5rem auto;
+  max-width: 420px;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.06), rgba(var(--accent2-rgb),0.06));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.xlr-main-result .result-name {
+  font-family: 'Lora', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.xlr-main-result .result-tags {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.xlr-tag {
+  padding: 0.15rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.xlr-verse {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 2;
+  white-space: pre-line;
+  padding: 1rem;
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  margin: 0.8rem 0;
+}
+.xlr-interp {
+  text-align: left;
+  padding: 0.8rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-top: 0.5rem;
+}
+.xlr-interp .interp-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 0.3rem;
+  color: var(--accent);
+}
+.xlr-interp .interp-detail {
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.xlr-source {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+/* === BaZi Chart === */
+.bazi-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.bazi-pillar {
+  text-align: center;
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 0.3rem;
+}
+.bazi-pillar .bp-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.bazi-pillar .bp-stem {
+  font-family: 'Lora', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.bazi-pillar .bp-branch {
+  font-family: 'Lora', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent2);
+}
+.bazi-pillar .bp-tengod {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+.bazi-pillar .bp-element {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.bazi-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.bazi-info-item {
+  padding: 0.6rem 0.8rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+.bazi-info-item .label { color: var(--muted); font-size: 0.72rem; }
+.bazi-info-item .value { font-weight: 700; color: var(--ink); }
+
+.five-elements-bar {
+  display: flex;
+  gap: 0.3rem;
+  margin: 0.5rem 0 1rem;
+}
+.fe-item {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem 0.2rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+}
+.fe-item .fe-icon { font-size: 1rem; }
+.fe-item .fe-val { font-family: 'JetBrainsMono', monospace; font-weight: 700; }
+
+/* === Grand Cycle === */
+.gc-timeline {
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+.gc-track {
+  display: flex;
+  gap: 0.4rem;
+  min-width: 600px;
+}
+.gc-item {
+  flex: 1;
+  min-width: 70px;
+  padding: 0.6rem 0.3rem;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  background: var(--bg2);
+}
+.gc-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+.gc-item.active {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb),0.08);
+}
+.gc-item .gc-age { font-size: 0.68rem; color: var(--muted); }
+.gc-item .gc-gz {
+  font-family: 'Lora', serif; font-size: 1rem; font-weight: 700;
+}
+.gc-item .gc-bar {
+  height: 4px; border-radius: 2px; margin-top: 0.2rem;
+}
+
+.gc-detail {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+.gc-detail .gcd-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.gc-detail .gcd-gz {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+
+/* === Guidance === */
+.guidance-section {
+  display: grid;
+  gap: 0.8rem;
+}
+.guidance-card {
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--accent);
+}
+.guidance-card .gc-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 0.3rem;
+  color: var(--accent2);
+}
+.guidance-card .gc-text {
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+/* === Radar & Scores === */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+.score-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+@media (max-width: 600px) { .score-cards { grid-template-columns: repeat(3, 1fr); } }
+.score-card {
+  text-align: center;
+  padding: 0.5rem 0.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+}
+.score-card .sc-label { font-size: 0.68rem; color: var(--muted); }
+.score-card .sc-score {
+  font-family: 'JetBrainsMono', monospace;
+  font-size: 1.2rem; font-weight: 700;
+}
+.score-card .sc-bar {
+  height: 3px; border-radius: 2px; margin-top: 0.15rem;
+}
+
+.composite-display {
+  text-align: center;
+  padding: 0.8rem 0;
+}
+.composite-display .score {
+  font-family: 'Lora', serif;
+  font-size: 3rem; font-weight: 700; line-height: 1;
+}
+.composite-display .level-badge {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem; font-weight: 700;
+  color: #fff; margin-top: 0.3rem;
+}
+.composite-display .desc { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+.year-selector {
+  display: flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.5rem;
+}
+.year-btn {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--bg3);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-family: 'JetBrainsMono', monospace;
+  transition: all 0.15s;
+}
+.year-btn:hover { border-color: var(--accent); }
+.year-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+
+#chart-radar { width: 100%; min-height: 280px; }
+#chart-trend { width: 100%; min-height: 300px; }
+
+/* === Zi Wei Chart === */
+.zw-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.zw-cell {
+  background: var(--bg3);
+  padding: 0.5rem 0.4rem;
+  min-height: 100px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.zw-cell.center {
+  grid-column: span 2;
+  grid-row: span 2;
+  background: var(--bg2);
+  min-height: auto;
+  justify-content: center;
+}
+.zw-cell .zw-branch {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.zw-cell .zw-palace {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-top: 0.1rem;
+}
+.zw-cell .zw-stem {
+  font-size: 0.6rem;
+  color: var(--muted);
+}
+.zw-cell .zw-stars {
+  margin-top: 0.3rem;
+  flex: 1;
+}
+.zw-star {
+  display: inline-block;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  margin: 0.05rem;
+  font-weight: 700;
+}
+.zw-cell.ming .zw-palace { color: var(--accent); }
+.zw-cell.shen .zw-palace { color: var(--green); }
+
+.zw-center-info {
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.zw-center-info .zw-ci-title {
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+.zw-center-info .zw-ci-ju {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+.zw-center-info .zw-ci-mg {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+.zw-narrative {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.zw-daily {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+}
+.zw-daily-header {
+  text-align: center;
+  padding: 0.8rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+.zw-daily-header .dhd-date {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.zw-daily-header .dhd-gz {
+  font-family: 'Lora', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.zw-daily-header .dhd-palace {
+  font-size: 0.8rem;
+  color: var(--accent2);
+  font-weight: 700;
+}
+
+.zw-fortune-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+@media (max-width: 600px) { .zw-fortune-grid { grid-template-columns: 1fr; } }
+.zw-fortune-item {
+  padding: 0.8rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+}
+.zw-fortune-item .zfi-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  margin-bottom: 0.2rem;
+  color: var(--accent2);
+}
+.zw-fortune-item .zfi-text {
+  font-size: 0.8rem;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+/* === Footer === */
+.app-footer {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding: 1.5rem 0 0.5rem;
+  border-top: 1px solid var(--rule);
+  margin-top: 1rem;
+  line-height: 1.8;
+}
+
+/* === Empty State === */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.empty-state .es-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+/* === Theme Switcher === */
+.theme-switcher {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg3);
+  padding: 0.4rem 0.5rem;
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--rule);
+}
+.theme-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  flex-shrink: 0;
+}
+.theme-btn:hover { transform: scale(1.15); }
+.theme-btn.active { border-color: var(--ink); }
+.theme-btn-pink { background: #f8c8dc; }
+.theme-btn-green { background: #c8e6c9; }
+.theme-btn-purple { background: #d1c4e9; }
+.theme-btn-custom {
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.theme-btn-custom.active { border-color: var(--ink); }
+
+/* Settings dropdown */
+.theme-settings {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--rule);
+  padding: 0.8rem;
+  min-width: 200px;
+  display: none;
+  z-index: 1001;
+}
+.theme-settings.show { display: block; }
+.theme-settings .ts-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.theme-settings .ts-upload-btn {
+  display: block;
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+}
+.theme-settings .ts-upload-btn:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.theme-settings .ts-clear-btn {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.35rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  color: var(--muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.theme-settings .ts-clear-btn:hover { color: var(--red); }
+
+/* === Xiao Liu Ren Palm Guide — Traditional Line Art === */
+.xlr-palm-guide {
+  margin: 0.5rem auto 1rem;
+  max-width: 200px;
+  text-align: center;
+}
+.xlr-palm-guide .pg-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.xlr-palm-guide svg { width: 100%; height: auto; }
+.xlr-palm-guide circle, .xlr-palm-guide path,
+.xlr-palm-guide line, .xlr-palm-guide ellipse, .xlr-palm-guide text {
+  transition: fill 0.4s ease, stroke 0.4s ease;
+}
+.xlr-palm-guide .pg-hand {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.xlr-palm-guide .pg-wrist {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  opacity: 0.35;
+}
+.xlr-palm-guide .pg-highlight {
+  fill: rgba(var(--accent-rgb),0.18);
+  stroke: none;
+}
+.xlr-palm-guide .pg-pos {
+  fill: rgba(var(--accent-rgb),0.06);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.xlr-palm-guide .pg-pos.active {
+  fill: rgba(var(--accent-rgb),0.28);
+  stroke-width: 2.5;
+}
+.xlr-palm-guide .pg-pos-num {
+  fill: var(--accent);
+  font-size: 9px;
+  font-weight: 700;
+  font-family: 'JetBrainsMono', monospace;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  user-select: none;
+}
+.xlr-palm-guide .pg-pos-text {
+  fill: var(--ink);
+  font-size: 8.5px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+}
+.xlr-palm-guide .pg-order {
+  fill: none;
+  stroke: var(--accent2);
+  stroke-width: 1;
+  stroke-dasharray: 3,2;
+  opacity: 0.35;
+}
+
+/* === BaZi Enhanced Display === */
+.bazi-pillar .bp-nayin {
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.15rem;
+  font-family: 'Lora', serif;
+}
+.bazi-pillar .bp-hidden {
+  font-size: 0.6rem;
+  color: var(--accent2);
+  text-align: center;
+  margin-top: 0.1rem;
+  line-height: 1.3;
+}
+.bazi-pillar .bp-changsheng {
+  font-size: 0.58rem;
+  color: var(--accent);
+  text-align: center;
+  margin-top: 0.1rem;
+}
+.bazi-shensha-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--rule);
+}
+.bazi-shensha-item {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--ink);
+}
+.bazi-shensha-item .ss-name { font-weight: 700; color: var(--accent); }
+.bazi-shensha-item .ss-desc { color: var(--muted); font-size: 0.65rem; }
+.bazi-lunar-info {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.3rem;
+  font-family: 'Lora', serif;
+}
+.bazi-pillar .bp-shensha {
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  justify-content: center;
+}
+.bazi-pillar .bp-ss {
+  font-size: 0.58rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--accent);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bazi-pattern-box {
+  margin: 0.8rem 0;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.04), rgba(var(--accent2-rgb),0.04));
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+}
+.bazi-pattern-box .bp-pattern-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.bazi-pattern-box .bp-pattern-main {
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+.bazi-pattern-box .bp-pattern-desc {
+  font-size: 0.78rem;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.bazi-pattern-box .bp-pattern-sec {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+/* === ZWDS Enhanced Display === */
+.zw-star-hua {
+  font-size: 0.5rem;
+  padding: 0.05rem 0.15rem;
+  border-radius: 3px;
+  margin-left: 0.1rem;
+}
+.zw-star-hua.lu { background: rgba(76,175,80,0.2); color: #2e7d32; }
+.zw-star-hua.quan { background: rgba(233,30,99,0.2); color: #c2185b; }
+.zw-star-hua.ke { background: rgba(33,150,243,0.2); color: #1565c0; }
+.zw-star-hua.ji { background: rgba(244,67,54,0.2); color: #c62828; }
+.zw-aux-star {
+  font-size: 0.55rem;
+  color: var(--accent2);
+  padding: 0.02rem 0.15rem;
+  background: rgba(var(--accent2-rgb),0.08);
+  border-radius: 3px;
+}
+.zw-sha-star {
+  font-size: 0.55rem;
+  color: var(--red);
+  padding: 0.02rem 0.15rem;
+  background: rgba(244,67,54,0.08);
+  border-radius: 3px;
+}
+.zw-sihua-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+}
+.zw-sihua-item { color: var(--ink); }
+.zw-sihua-item .sh-star { font-weight: 700; color: var(--accent); }
+.zw-deep-interp {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+}
+.zw-deep-interp .di-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.zw-deep-interp .di-item {
+  font-size: 0.75rem;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+  line-height: 1.6;
+}
+.zw-deep-interp .di-star {
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+/* === Life Reading (命理总览) === */
+.life-summary-box {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.08), rgba(var(--accent2-rgb),0.05));
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+}
+.life-summary-box .ls-sentence {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text);
+  font-weight: 600;
+}
+.life-summary-box .ls-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+}
+.life-summary-box .ls-meta-item {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(var(--accent-rgb),0.1);
+  color: var(--accent);
+}
+.life-current-year {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(255,193,7,0.1);
+  border-left: 3px solid #ffc107;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.life-stages {
+  margin-bottom: 1rem;
+}
+.life-stages .ls-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--rule);
+}
+.life-stage-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.life-stage-item:last-child { border-bottom: none; }
+.life-stage-item .lsi-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.life-stage-item .lsi-icon.fav {
+  background: rgba(76,175,80,0.15);
+  color: #2e7d32;
+}
+.life-stage-item .lsi-icon.neutral {
+  background: rgba(var(--accent-rgb),0.1);
+  color: var(--accent);
+}
+.life-stage-item .lsi-icon.current {
+  background: rgba(255,193,7,0.15);
+  color: #f57c00;
+}
+.life-stage-item .lsi-body { flex: 1; min-width: 0; }
+.life-stage-item .lsi-head {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+}
+.life-stage-item .lsi-head .lsi-tag {
+  font-size: 0.65rem;
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  margin-left: 0.3rem;
+}
+.life-stage-item .lsi-head .lsi-tag.ji { background: rgba(76,175,80,0.15); color: #2e7d32; }
+.life-stage-item .lsi-head .lsi-tag.ping { background: rgba(var(--accent-rgb),0.1); color: var(--accent); }
+.life-stage-item .lsi-head .lsi-tag.change { background: rgba(255,152,0,0.15); color: #e65100; }
+.life-stage-item .lsi-summary {
+  font-size: 0.75rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.life-stage-item .lsi-detail {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.life-daily-advice {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.life-daily-advice .lda-item {
+  background: rgba(var(--accent-rgb),0.05);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+}
+.life-daily-advice .lda-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+.life-daily-advice .lda-text {
+  font-size: 0.73rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.life-improvement {
+  margin-bottom: 1rem;
+}
+.life-improvement .li-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--rule);
+}
+.life-improvement .li-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.life-improvement .li-item:last-child { border-bottom: none; }
+.life-improvement .li-cat {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent2);
+  margin-bottom: 0.15rem;
+}
+.life-improvement .li-text {
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* === Share Button & Modal === */
+.share-btn {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.share-btn:hover {
+  background: rgba(var(--accent-rgb),0.2);
+}
+.share-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.share-modal.show { display: flex; }
+.share-modal-content {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.share-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.share-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.share-qr-area {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.share-qr-area img {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+}
+.share-url-area {
+  margin-bottom: 0.8rem;
+}
+.share-url-area label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.share-url-box {
+  display: flex;
+  gap: 0.3rem;
+}
+.share-url-box input {
+  flex: 1;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+.share-copy-btn {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.share-tip {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+  .app { padding: 0.5rem 0.8rem 2rem; }
+  .app-header { padding-top: 2.5rem; }
+  .app-header .title { font-size: 1.3rem; }
+  .module-header { padding: 0.8rem 1rem 0.4rem; }
+  .tab-content { padding: 0.8rem 1rem; }
+  .bazi-pillars { gap: 0.3rem; }
+  .bazi-pillar .bp-stem, .bazi-pillar .bp-branch { font-size: 1.2rem; }
+  .zw-chart-grid { font-size: 0.62rem; }
+  .zw-cell { min-height: 80px; padding: 0.3rem 0.2rem; }
+  .zw-star { font-size: 0.6rem; padding: 0.05rem 0.2rem; }
+  .theme-switcher { top: 0.5rem; right: 0.5rem; padding: 0.3rem 0.4rem; gap: 0.3rem; }
+  .theme-btn { width: 22px; height: 22px; }
+  .share-btn { font-size: 0.65rem; padding: 0.2rem 0.4rem; }
+  .xlr-palm-guide { max-width: 160px; }
+  .life-daily-advice { grid-template-columns: 1fr; }
+  .life-stage-item .lsi-icon { width: 30px; height: 30px; font-size: 0.62rem; }
+  .tab-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab-btn { white-space: nowrap; font-size: 0.72rem; padding: 0.35rem 0.55rem; }
+}
+
+@media (min-width: 1200px) {
+  .app {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 3rem 3rem;
+  }
+  .app-header { padding-top: 1rem; }
+  .app-header .title { font-size: 1.6rem; }
+  .module-card {
+    border-radius: 14px;
+  }
+  .life-daily-advice { grid-template-columns: repeat(3, 1fr); }
+  .life-summary-box { padding: 1.2rem 1.5rem; }
+}
+
+@media (min-width: 1600px) {
+  .app {
+    max-width: 1100px;
+    padding: 2.5rem 4rem 3rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Theme Switcher + Share -->
+<div class="theme-switcher">
+  <button class="theme-btn theme-btn-pink active" data-theme="light-pink" title="浅粉"></button>
+  <button class="theme-btn theme-btn-green" data-theme="light-green" title="淡绿"></button>
+  <button class="theme-btn theme-btn-purple" data-theme="light-purple" title="浅紫"></button>
+  <button class="theme-btn theme-btn-custom" id="custom-bg-btn" title="自定义背景">+</button>
+  <button class="share-btn" id="share-btn" title="分享给好友">分享</button>
+  <div class="theme-settings" id="theme-settings">
+    <div class="ts-title">自定义背景</div>
+    <label class="ts-upload-btn" for="bg-upload-input">上传背景图片</label>
+    <input type="file" id="bg-upload-input" accept="image/*" style="display:none">
+    <button class="ts-clear-btn" id="bg-clear-btn">清除自定义背景</button>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="share-modal" id="share-modal">
+  <div class="share-modal-content">
+    <div class="share-modal-header">
+      <span>分享给好友</span>
+      <button class="share-close" id="share-close">&times;</button>
+    </div>
+    <div class="share-modal-body">
+      <div class="share-qr-area" id="share-qr-area"></div>
+      <div class="share-url-area">
+        <label>复制链接：</label>
+        <div class="share-url-box">
+          <input type="text" id="share-url-input" readonly>
+          <button class="share-copy-btn" id="share-copy-btn">复制</button>
+        </div>
+      </div>
+      <div class="share-tip">扫描二维码或在浏览器中打开链接，即可随时使用命理推演。<br>收藏链接后永久可用，无需下载任何软件。</div>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="title">命理趋势参考 <span>· 三式合一</span></div>
+    <div class="subtitle">小六壬 · 八字 · 紫微斗数 — 传统文化研究参考</div>
+  </div>
+
+  <!-- Birth Input -->
+  <div class="birth-input">
+    <div class="input-group">
+      <label>历法</label>
+      <select id="birth-caltype">
+        <option value="solar">公历</option>
+        <option value="lunar">农历</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>出生年</label>
+      <input type="number" id="birth-year" value="1990" min="1940" max="2040">
+    </div>
+    <div class="input-group">
+      <label>月</label>
+      <input type="number" id="birth-month" value="5" min="1" max="13">
+    </div>
+    <div class="input-group">
+      <label>日</label>
+      <input type="number" id="birth-day" value="15" min="1" max="30">
+    </div>
+    <div class="input-group">
+      <label>时(24h)</label>
+      <input type="number" id="birth-hour" value="8" min="0" max="23">
+    </div>
+    <div class="input-group">
+      <label>性别</label>
+      <select id="birth-gender">
+        <option value="male">男</option>
+        <option value="female">女</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="btn-calculate">排盘推演</button>
+  </div>
+
+  <!-- ====== Module 1: 小六壬 ====== -->
+  <div class="module-card">
+    <div class="module-header">
+      <div class="m-title"><span class="num">1</span>小六壬 · 速占 <span class="badge">《玉匣记》六壬时课</span></div>
+      <div class="m-subtitle">输入三数或取当日时辰，即时起卦，测吉凶、寻物、方位、健康、出行</div>
+    </div>
+    <div class="tab-content active">
+      <!-- 六壬掌诀排布图 -->
+      <div class="xlr-palm-guide">
+        <div class="pg-label">六壬掌诀排布 · 左手掌 · 六宫顺序</div>
+        <svg viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg">
+          <!-- 手腕 -->
+          <line class="pg-wrist" x1="68" y1="262" x2="68" y2="295"/>
+          <line class="pg-wrist" x1="132" y1="262" x2="132" y2="295"/>
+          <line class="pg-wrist" x1="68" y1="295" x2="132" y2="295"/>
+
+          <!-- 手掌轮廓 -->
+          <path class="pg-hand" d="M40,258 Q34,158 44,145 L156,145 Q166,158 160,258 Q160,268 148,272 L52,272 Q40,268 40,258"/>
+
+          <!-- 无名指（左） -->
+          <path class="pg-hand" d="M48,145 Q42,140 42,130 L42,75 Q42,58 54,54 Q66,58 66,75 L66,145"/>
+
+          <!-- 中指（中） -->
+          <path class="pg-hand" d="M80,145 Q74,140 74,130 L74,35 Q74,18 86,14 Q98,18 98,35 L98,145"/>
+
+          <!-- 食指（右） -->
+          <path class="pg-hand" d="M112,145 Q106,140 106,130 L106,75 Q106,58 118,54 Q130,58 130,75 L130,145"/>
+
+          <!-- 拇指 -->
+          <path class="pg-hand" d="M156,185 Q170,180 180,162 Q186,142 179,122 Q171,110 161,114"/>
+
+          <!-- 大安位置高亮背景 -->
+          <ellipse class="pg-highlight" cx="118" cy="115" rx="17" ry="13"/>
+
+          <!-- 掌诀顺序连接线 (大安→留连→速喜→赤口→小吉→空亡→大安) -->
+          <path class="pg-order" d="M118,115 L118,62 L86,20 L54,62 L54,115 L86,115 Z"/>
+
+          <!-- 1. 大安 (食指根部) -->
+          <circle class="pg-pos" id="pg-daan" cx="118" cy="115" r="12"/>
+          <text class="pg-pos-num" x="118" y="115">1</text>
+          <text class="pg-pos-text" x="118" y="138">大安</text>
+
+          <!-- 2. 留连 (食指尖) -->
+          <circle class="pg-pos" id="pg-liulian" cx="118" cy="62" r="12"/>
+          <text class="pg-pos-num" x="118" y="62">2</text>
+          <text class="pg-pos-text" x="118" y="85">留连</text>
+
+          <!-- 3. 速喜 (中指尖) -->
+          <circle class="pg-pos" id="pg-suxi" cx="86" cy="20" r="12"/>
+          <text class="pg-pos-num" x="86" y="20">3</text>
+          <text class="pg-pos-text" x="86" y="43">速喜</text>
+
+          <!-- 4. 赤口 (无名指尖) -->
+          <circle class="pg-pos" id="pg-chikou" cx="54" cy="62" r="12"/>
+          <text class="pg-pos-num" x="54" y="62">4</text>
+          <text class="pg-pos-text" x="54" y="85">赤口</text>
+
+          <!-- 5. 小吉 (无名指根部) -->
+          <circle class="pg-pos" id="pg-xiaoji" cx="54" cy="115" r="12"/>
+          <text class="pg-pos-num" x="54" y="115">5</text>
+          <text class="pg-pos-text" x="54" y="138">小吉</text>
+
+          <!-- 6. 空亡 (中指根部) -->
+          <circle class="pg-pos" id="pg-kongwang" cx="86" cy="115" r="12"/>
+          <text class="pg-pos-num" x="86" y="115">6</text>
+          <text class="pg-pos-text" x="86" y="138">空亡</text>
+        </svg>
+      </div>
+
+      <div class="xlr-input">
+        <button class="xlr-btn" id="xlr-now">现在起卦（北京时间）</button>
+        <span class="xlr-or">或报三数：</span>
+        <div class="xlr-nums">
+          <input type="number" id="xlr-n1" value="1" min="1" max="99">
+          <input type="number" id="xlr-n2" value="2" min="1" max="99">
+          <input type="number" id="xlr-n3" value="3" min="1" max="99">
+        </div>
+        <button class="xlr-btn" id="xlr-calc">起卦</button>
+      </div>
+      <div class="xlr-category-tabs" id="xlr-cat-tabs">
+        <button class="xlr-cat-btn active" data-cat="测吉凶">测吉凶</button>
+        <button class="xlr-cat-btn" data-cat="寻物">寻物</button>
+        <button class="xlr-cat-btn" data-cat="测方位">测方位</button>
+        <button class="xlr-cat-btn" data-cat="测健康">测健康</button>
+        <button class="xlr-cat-btn" data-cat="测出行办事">测出行办事</button>
+      </div>
+      <div id="xlr-result" class="xlr-result">
+        <div class="empty-state"><div class="es-icon">☰</div>点击「现在起卦」或输入三个数字起卦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Module 2: 八字 ====== -->
+  <div class="module-card">
+    <div class="module-header">
+      <div class="m-title"><span class="num">2</span>八字 <span class="badge">子平法</span></div>
+      <div class="m-subtitle">四柱排盘 · 当日运势 · 大运流年 · 个人指导 · 五维趋势 · 命理总览</div>
+    </div>
+    <div class="tab-bar" id="bazi-tabs">
+      <button class="tab-btn active" data-tab="bazi-chart">整体排盘</button>
+      <button class="tab-btn" data-tab="bazi-daily">当日运势</button>
+      <button class="tab-btn" data-tab="bazi-dayun">大运流年</button>
+      <button class="tab-btn" data-tab="bazi-guidance">个人指导</button>
+      <button class="tab-btn" data-tab="bazi-radar">五维趋势</button>
+      <button class="tab-btn" data-tab="bazi-life">命理总览</button>
+    </div>
+
+    <!-- 整体排盘 -->
+    <div class="tab-content active" id="tab-bazi-chart">
+      <div id="bazi-chart-area">
+        <div class="empty-state"><div class="es-icon">☰</div>点击上方「排盘推演」生成八字排盘</div>
+      </div>
+    </div>
+
+    <!-- 当日运势 -->
+    <div class="tab-content" id="tab-bazi-daily">
+      <div id="bazi-daily-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看当日运势</div>
+      </div>
+    </div>
+
+    <!-- 大运流年 -->
+    <div class="tab-content" id="tab-bazi-dayun">
+      <div id="bazi-dayun-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看大运流年解读</div>
+      </div>
+    </div>
+
+    <!-- 个人指导 -->
+    <div class="tab-content" id="tab-bazi-guidance">
+      <div id="bazi-guidance-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看个人指导</div>
+      </div>
+    </div>
+
+    <!-- 五维趋势 -->
+    <div class="tab-content" id="tab-bazi-radar">
+      <div id="bazi-radar-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看五维趋势雷达</div>
+      </div>
+    </div>
+
+    <!-- 命理总览 -->
+    <div class="tab-content" id="tab-bazi-life">
+      <div id="bazi-life-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看命理总览</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Module 3: 紫微斗数 ====== -->
+  <div class="module-card">
+    <div class="module-header">
+      <div class="m-title"><span class="num">3</span>紫微斗数 <span class="badge">《紫微斗数全书》</span></div>
+      <div class="m-subtitle">十二宫整体盘 · 当日运势 · 命理总览</div>
+    </div>
+    <div class="tab-bar" id="zw-tabs">
+      <button class="tab-btn active" data-tab="zw-chart">整体盘</button>
+      <button class="tab-btn" data-tab="zw-daily">当日运势</button>
+      <button class="tab-btn" data-tab="zw-life">命理总览</button>
+    </div>
+
+    <!-- 整体盘 -->
+    <div class="tab-content active" id="tab-zw-chart">
+      <div id="zw-chart-area">
+        <div class="empty-state"><div class="es-icon">☰</div>点击上方「排盘推演」生成紫微斗数盘</div>
+      </div>
+    </div>
+
+    <!-- 当日运势 -->
+    <div class="tab-content" id="tab-zw-daily">
+      <div id="zw-daily-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看当日运势</div>
+      </div>
+    </div>
+
+    <!-- 命理总览 -->
+    <div class="tab-content" id="tab-zw-life">
+      <div id="zw-life-area">
+        <div class="empty-state"><div class="es-icon">☰</div>排盘后查看命理总览</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="app-footer">
+    古籍为唯一依据 · 无据不判 · 赋性通则非定断<br>
+    所有评分及解读均为趋势参考，不构成命运预测或决策依据
+  </div>
+
+</div>
+
+<!-- Libraries -->
+<script src="./_shared/js/echarts.min.js" defer></script>
+
+<!-- Engines -->
+<script src="assets/lunar-calendar.js?v=102" defer></script>
+<script src="assets/bazi-calculator.js?v=102" defer></script>
+<script src="assets/xiao-liu-ren.js?v=102" defer></script>
+<script src="assets/ziwei-engine.js?v=102" defer></script>
+<script src="assets/scoring-engine.js?v=102" defer></script>
+
+<!-- App Controller -->
+<script src="assets/app.js?v=102" defer></script>
+
+</body>
+</html>
