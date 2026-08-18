@@ -647,42 +647,42 @@ function generateNarrative(trendResult, chart, grandCycle, annual) {
     var parts = [];
 
     // 趋势判断
-    if (score >= 85) parts.push(label + '趋势极佳，多有利好');
-    else if (score >= 70) parts.push(label + '趋势向好，整体顺利');
-    else if (score >= 55) parts.push(label + '趋势平稳，无大起大落');
-    else if (score >= 40) parts.push(label + '趋势偏弱，需多留意');
-    else parts.push(label + '压力较大，宜守不宜攻');
+    if (score >= 85) parts.push(label + '超棒！好运爆棚，冲就完事了～');
+    else if (score >= 70) parts.push(label + '趋势很不错，事情在往好的方向走～');
+    else if (score >= 55) parts.push(label + '比较平稳，没大起大落，安心啦～');
+    else if (score >= 40) parts.push(label + '稍微有点弱，多留意一下细节哦～');
+    else parts.push(label + '压力有点大，先稳住别急，保护好自己最重要～');
 
     // 命理依据
     var gcMod = trendResult.scores.grandCycleModifier[dim];
     var anMod = trendResult.scores.annualModifier[dim];
 
     if (gcMod > 0 || anMod > 0) {
-      parts.push('当前大运天干为' + tenGodDesc + '，对本维度有正向助力');
+      parts.push('大运天干' + tenGodDesc + '，在给你加油打气呢');
     } else if (gcMod < 0 || anMod < 0) {
-      parts.push('当前大运天干为' + tenGodDesc + '，对本维度有一定压力');
+      parts.push('大运天干' + tenGodDesc + '，压力有一丢丢，别怕，慢慢来');
     } else {
-      parts.push('当前大运对本维度影响中性');
+      parts.push('大运对这个方面影响比较中性，不急不躁');
     }
 
-    if (anMod > 3) parts.push('流年亦有助力，时机较好');
-    else if (anMod < -3) parts.push('流年波动较大，需谨慎应对');
+    if (anMod > 3) parts.push('流年也在帮忙，时机蛮好的，加油鸭');
+    else if (anMod < -3) parts.push('流年有点小波动，稳住心态，谨慎一点没坏处');
 
     // 建议提示
-    if (score >= 70) parts.push('可把握机遇，积极进取');
-    else if (score >= 55) parts.push('保持现状，稳中求进');
-    else if (score >= 40) parts.push('谨慎行事，关注薄弱环节');
-    else parts.push('以守为攻，避免冒进');
+    if (score >= 70) parts.push('可以把握机会，积极冲一冲');
+    else if (score >= 55) parts.push('保持现状，稳稳地往前走');
+    else if (score >= 40) parts.push('做事稳一点，多关注薄弱的地方');
+    else parts.push('先守好基本盘，别急着冒进，等风来');
 
     narratives[dim] = parts.join('。') + '。（仅供参考）';
   });
 
   // 综合解读
   var compositeLevel = trendResult.trendLevel.label;
-  narratives.composite = '当前综合趋势指数为' + trendResult.compositeIndex + '分，等级"' + compositeLevel + '"。' +
+  narratives.composite = '综合趋势指数' + trendResult.compositeIndex + '分，等级"' + compositeLevel + '"～' +
     '日主' + dm + '（' + STEM_ELEMENTS[dm] + '），' + strengthLabel + '。' +
-    '处于' + grandCycle.stem + grandCycle.branch + '大运（' + tenGodDesc + '），' +
-    annual.year + '年' + annual.stem + annual.branch + '流年。' +
+    '正走在' + grandCycle.stem + grandCycle.branch + '大运（' + tenGodDesc + '）里，' +
+    annual.year + '年' + annual.stem + annual.branch + '流年加持中。' +
     '（仅供参考）';
 
   return narratives;
