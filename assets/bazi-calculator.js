@@ -689,32 +689,32 @@ function generatePersonalGuidance(chart, trendResult) {
 
   // 性格分析
   var personalityMap = {
-    '甲': '直爽有仁心，向上生长如参天大树，领导力强',
-    '乙': '柔韧有韧性，善于变通，如藤蔓适应环境',
-    '丙': '热情奔放，光明磊落，有感染力',
-    '丁': '温和细腻，内心有光，善于照亮他人',
-    '戊': '厚重稳健，诚信可靠，有承载之德',
-    '己': '踏实包容，善于滋养，低调务实',
-    '庚': '刚毅果决，义气分明，有变革之力',
-    '辛': '精致细腻，有珠宝之质，善于发现价值',
-    '壬': '智慧通达，如江河奔流，善于应变',
-    '癸': '柔润至极，善于滋润万物，直觉敏锐'
+    '甲': '直爽又有爱心，像大树一样向上生长，天生自带领导力',
+    '乙': '柔韧又灵活，像藤蔓一样能适应各种环境，善于变通',
+    '丙': '热情又开朗，光明磊落，走到哪都能感染身边的人',
+    '丁': '温和又细腻，内心有光，总能照亮身边的人',
+    '戊': '稳重又靠谱，诚信满满，天生的靠山担当',
+    '己': '踏实又包容，低调又有实力，默默滋养着身边人',
+    '庚': '刚毅又果决，义气满满，有变革的魄力',
+    '辛': '精致又细腻，自带珠宝气质，总能发现别人忽略的价值',
+    '壬': '聪明又通透，像江河一样奔流，超会随机应变',
+    '癸': '柔润又敏感，善于滋润万物，直觉力max'
   };
   guidance.personality = '日主' + dm + '（' + dmEl + '），' + strengthLabel + '。' +
-    (personalityMap[dm] || '性格特点鲜明') + '。';
+    (personalityMap[dm] || '性格鲜明有特色') + '。';
 
   // 喜用五行方向
   var elementDirections = {
     '木': '东方', '火': '南方', '土': '中方/四隅', '金': '西方', '水': '北方'
   };
   var favDirs = fav.map(function(e) { return e + '（' + elementDirections[e] + '）'; }).join('、');
-  guidance.luckDirection = '喜用五行：' + favDirs + '。宜多接触相应方位及颜色。';
+  guidance.luckDirection = '喜用五行：' + favDirs + '。多去这些方向走走，多接触对应颜色，好运up up～';
 
   // 事业指导
   if (fav.includes(dmEl) || fav.includes(GENERATES_BC[dmEl])) {
-    guidance.career = '适合从事与自身五行属性相关的行业，发挥自身优势。';
+    guidance.career = '做跟自己五行属性相关的行业，能发挥出最大优势～';
   } else {
-    guidance.career = '宜从事喜用五行相关行业，以补命局之不足。';
+    guidance.career = '建议做喜用五行相关的行业，补一补命局的短板～';
   }
 
   var careerByElement = {
@@ -725,43 +725,43 @@ function generatePersonalGuidance(chart, trendResult) {
     '水': '物流、旅游、贸易、水产、咨询'
   };
   var suitableCareers = fav.map(function(e) { return careerByElement[e]; }).filter(Boolean).join('、');
-  if (suitableCareers) guidance.career += '适合行业：' + suitableCareers + '。';
+  if (suitableCareers) guidance.career += '适合的行业：' + suitableCareers + '。';
 
   // 财运指导
   var wealthStar = (chart.gender === 'male') ? '正偏财' : '官杀';
   if (strength === 'strong' || strength === 'slightlyStrong') {
-    guidance.wealth = '身旺能担财，财运较好，适合主动求财和投资理财。' +
-      '注意比劫夺财，不宜过于张扬财富。';
+    guidance.wealth = '身旺能担财，财运蛮不错的，适合主动求财和理财～' +
+      '不过注意别太张扬，小心比劫夺财，低调赚钱最稳～';
   } else if (strength === 'weak' || strength === 'slightlyWeak') {
-    guidance.wealth = '身弱担财有压力，宜稳扎稳打，不宜冒进投资。' +
-      '宜合伙经营，借助他人之力。';
+    guidance.wealth = '身弱担财有点吃力，稳扎稳打比较靠谱，别急着冒进投资～' +
+      '可以考虑合伙经营，借力使力更轻松～';
   } else {
-    guidance.wealth = '中和之命，财运平稳。量入为出，适度理财即可。';
+    guidance.wealth = '中和之命，财运平稳。量入为出，适度理财就很棒了～';
   }
 
   // 婚姻指导
   if (strength === 'strong' || strength === 'slightlyStrong') {
-    guidance.marriage = '身旺者在婚姻中较为主观，宜学会包容退让，' +
-      '选择能理解自己的伴侣。配偶宜柔顺。';
+    guidance.marriage = '身旺的你在感情里比较强势，记得多包容多退让～' +
+      '找一个能理解你的人，温柔一点的更适合你～';
   } else if (strength === 'weak' || strength === 'slightlyWeak') {
-    guidance.marriage = '身弱者在婚姻中需要依靠伴侣，宜选择能扶持自己的配偶。' +
-      '夫妻宫逢冲需注意婚姻稳定。';
+    guidance.marriage = '身弱的你需要靠一靠伴侣，选一个能扶你的人～' +
+      '如果夫妻宫逢冲，多注意感情稳定，用心经营就好～';
   } else {
-    guidance.marriage = '婚姻运势平稳，注重沟通和理解即可。';
+    guidance.marriage = '婚姻运势平稳，多沟通多理解，甜甜蜜蜜没问题～';
   }
 
   // 健康指导
   var healthByElement = {
-    '木': '注意肝胆、筋骨系统，保持情志舒畅',
-    '火': '注意心血管、眼睛、血液循环，避免过劳',
-    '土': '注意脾胃、消化系统，饮食规律',
-    '金': '注意肺部、呼吸系统、皮肤，防外伤',
-    '水': '注意肾脏、泌尿系统、耳部，防寒'
+    '木': '留意肝胆和筋骨，保持心情舒畅，别生闷气',
+    '火': '留意心血管和眼睛，别太累，该歇就歇',
+    '土': '留意脾胃和消化，饮食规律一点',
+    '金': '留意肺部和呼吸系统，小心外伤',
+    '水': '留意肾脏和泌尿系统，注意保暖防寒'
   };
   var healthConcern = fav.map(function(e) { return healthByElement[e]; }).filter(Boolean).join('；');
-  if (!healthConcern) healthConcern = healthByElement[dmEl] || '注意日常保健';
+  if (!healthConcern) healthConcern = healthByElement[dmEl] || '日常保健做好就行';
   guidance.health = '健康方面：' + healthConcern + '。' +
-    '五行' + (fav.length > 0 ? '以' + fav.join('、') + '为调养重点' : '保持平衡') + '。';
+    '五行' + (fav.length > 0 ? '以' + fav.join('、') + '为调养重点' : '保持平衡') + '～';
 
   return guidance;
 }
@@ -808,20 +808,20 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
 
   var oneSentence = '日主' + dm + dmEl + '，' + strengthLabel +
     '，五行' + (missingElements.length > 0 ? '缺' + missingElements.join('、') : maxEl + '偏旺') +
-    '，喜' + fav.join('、') + '，宜' + favDir + '发展，' +
+    '，喜' + fav.join('、') + '，往' + favDir + '发展最旺你～' +
     (personalityMap[dm] || '性格鲜明') + '，' +
-    (strength === 'strong' || strength === 'slightlyStrong' ? '中年运势上扬' : '大运转入喜用后运势渐佳') +
-    '。';
+    (strength === 'strong' || strength === 'slightlyStrong' ? '中年运势往上走，冲鸭' : '等大运转入喜用，好运自然来') +
+    '～';
 
   // --- 人生各阶段 ---
   var lifeStages = [];
   var stageNames = ['少年运', '青年运', '中年运', '壮年运', '晚年运'];
   var stageAdvice = {
-    'strong': '身旺宜注意克制冲动，凡事三思而后行',
-    'slightlyStrong': '身偏旺运势不错，但需谦逊待人',
-    'balanced': '中和之命运势平稳，稳中求进',
-    'slightlyWeak': '身偏弱需待时而动，不宜冒进',
-    'weak': '身弱宜守成，待大运扶身再进'
+    'strong': '身旺要控制一下冲动，凡事三思再行动～',
+    'slightlyStrong': '身偏旺运势还行，谦逊一点人缘更好～',
+    'balanced': '中和之命运势平稳，稳稳往前走就对了～',
+    'slightlyWeak': '身偏弱先等一等时机，别急着冲～',
+    'weak': '身弱先守好基本盘，等大运来扶再进～'
   };
 
   grandCycles.forEach(function(gc, idx) {
@@ -836,22 +836,22 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
     var luckDesc = '';
     if (isFav) {
       luckLevel = '吉运';
-      luckDesc = '此运' + fav.join('、') + '当令，运势顺遂，宜把握机遇、积极进取';
+      luckDesc = '这步运' + fav.join('、') + '当令，运势超顺的，抓住机会冲就对了～';
     } else {
       var unfavEl = BC_STEM_ELEMENTS[gc.stem];
       luckLevel = '平运';
-      luckDesc = '此运' + gc.stem + gc.branch + '(' + gcEl + ')，十神为' + tenGod +
+      luckDesc = '这步运' + gc.stem + gc.branch + '(' + gcEl + ')，十神为' + tenGod +
         '，' + (stageAdvice[strength] || '稳中求进');
     }
 
     // 长生阶段特殊提示
     var csAdvice = '';
     if (changSheng === '长生' || changSheng === '冠带' || changSheng === '临官' || changSheng === '帝旺') {
-      csAdvice = '处于' + changSheng + '之地，精力旺盛，事业上升期';
+      csAdvice = '处于' + changSheng + '之地，精力旺盛，事业上升期，冲鸭';
     } else if (changSheng === '衰' || changSheng === '病' || changSheng === '死' || changSheng === '墓' || changSheng === '绝') {
-      csAdvice = '处于' + changSheng + '之地，宜守不宜攻，注意健康';
+      csAdvice = '处于' + changSheng + '之地，先稳住别急，注意身体，养精蓄锐';
     } else {
-      csAdvice = '处于' + changSheng + '之地，运势平稳过渡';
+      csAdvice = '处于' + changSheng + '之地，运势平稳过渡，不急不躁';
     }
 
     lifeStages.push({
@@ -873,16 +873,16 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
   var elementActivity = { '木': '散步、园艺、接触自然', '火': '晒太阳、有氧运动', '土': '徒步、接触大地', '金': '器械运动、呼吸练习', '水': '游泳、近水活动' };
 
   var dailyAdvice = {
-    color: '宜穿' + fav.map(function(e) { return elementColors[e]; }).join('、') + '衣物',
-    direction: '出行宜朝' + favDir + '，居住宜选朝' + favDir + '的房间',
-    diet: '饮食宜多食' + fav.map(function(e) { return elementFood[e]; }).join('、'),
-    activity: '宜' + fav.map(function(e) { return elementActivity[e]; }).join('、'),
+    color: '多穿' + fav.map(function(e) { return elementColors[e]; }).join('、') + '的衣服，旺气满满～',
+    direction: '出门朝' + favDir + '走，选房也朝那个方向最好～',
+    diet: '多吃' + fav.map(function(e) { return elementFood[e]; }).join('、') + '，养好身体～',
+    activity: '多' + fav.map(function(e) { return elementActivity[e]; }).join('、') + '，动起来更开心～',
     social: strength === 'strong' || strength === 'slightlyStrong'
-      ? '社交中宜谦逊，避免争强好胜'
-      : '社交中宜主动结交贵人，多与' + fav.join('、') + '旺者来往',
+      ? '社交中谦虚一点，别太争强好胜，人缘会更好'
+      : '多主动交朋友，跟' + fav.join('、') + '旺的人多来往，贵人就在身边',
     taboo: missingElements.length > 0
-      ? '忌过度接触' + missingElements.join('、') + '相关事物'
-      : '忌过度张扬，宜低调行事'
+      ? '少接触跟' + missingElements.join('、') + '相关的东西，会消耗能量'
+      : '别太张扬，低调做事最稳当'
   };
 
   // --- 提升命格 ---
@@ -891,15 +891,15 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
   // 方位调整
   destinyImprovement.push({
     category: '方位调理',
-    advice: '日常多朝' + favDir + '活动，办公桌或床位置宜朝' + favDir +
-      '。若条件允许，可搬迁至出生地的' + favDir + '方位发展。'
+    advice: '日常多往' + favDir + '走动，办公桌或床也尽量朝那个方向。' +
+      '有条件的话，搬到出生地的' + favDir + '发展更旺你哦～'
   });
 
   // 颜色调理
   destinyImprovement.push({
     category: '颜色调理',
-    advice: '日常穿着、家居装饰宜多用' + fav.map(function(e) { return elementColors[e]; }).join('、') +
-      '，避免过多使用忌神颜色。'
+    advice: '穿搭和家居多用' + fav.map(function(e) { return elementColors[e]; }).join('、') +
+      '，少用忌神颜色，好气场自然来～'
   });
 
   // 行业调理
@@ -913,22 +913,22 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
   var suitableCareers = fav.map(function(e) { return careerByElement[e]; }).filter(Boolean).join('、');
   destinyImprovement.push({
     category: '行业选择',
-    advice: '适合从事与' + fav.join('、') + '五行相关的行业：' + suitableCareers + '。'
+    advice: '做跟' + fav.join('、') + '五行相关的工作最顺：' + suitableCareers + '～'
   });
 
   // 饮食调理
   destinyImprovement.push({
     category: '饮食调养',
-    advice: '多食' + fav.map(function(e) { return elementFood[e]; }).join('、') +
-      '，少食忌神五行对应的食物，以调和体质。'
+    advice: '多吃' + fav.map(function(e) { return elementFood[e]; }).join('、') +
+      '，少吃忌神五行对应的食物，调好体质～'
   });
 
   // 社交调理
   destinyImprovement.push({
     category: '人际调理',
     advice: strength === 'strong' || strength === 'slightlyStrong'
-      ? '身旺宜多结交比劫旺者(同五行)以外的朋友，选择能包容自己的伴侣。'
-      : '身弱宜多与' + fav.join('、') + '旺者交往，选择能扶持自己的伴侣和合作伙伴。'
+      ? '身旺多交不同五行的朋友，找一个能包容你的伴侣，互补更长久～'
+      : '身弱多跟' + fav.join('、') + '旺的人玩，选能扶你的伴侣和合作伙伴，贵人就在身边～'
   });
 
   // 神煞特殊调理
@@ -937,9 +937,9 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
   var hasHuaGai = chart.shensha.some(function(s) { return s.name === '华盖'; });
 
   var shenshaAdvice = '';
-  if (hasHuaGai) shenshaAdvice += '命带华盖，适合修行、研究玄学或艺术，可借此提升精神境界。';
-  if (hasYiMa) shenshaAdvice += '命带驿马，宜多外出走动、旅行或从事流动性工作，有利运势。';
-  if (hasTaoHua) shenshaAdvice += '命带桃花，可从事需要人际交往的工作，善用人缘提升事业。';
+  if (hasHuaGai) shenshaAdvice += '命带华盖，适合修行、研究玄学或搞艺术，精神世界会很丰富哦～';
+  if (hasYiMa) shenshaAdvice += '命带驿马，多出去走走、旅行或做流动性工作，运势会更好～';
+  if (hasTaoHua) shenshaAdvice += '命带桃花，做人际交往类的工作超有优势，善用人缘升职加薪～';
   if (shenshaAdvice) {
     destinyImprovement.push({
       category: '神煞调理',
@@ -955,7 +955,7 @@ function generateBaZiLifeReading(chart, grandCycles, yearlyTrends) {
       var compIdx = current.trend.compositeIndex;
       var level = current.trend.trendLevel;
       currentYearTip = current.year + '年综合趋势指数' + compIdx + '，' + level.label +
-        '。' + (compIdx >= 55 ? '今年运势不错，宜积极进取。' : '今年运势偏弱，宜稳守为主，不宜冒进。');
+        '。' + (compIdx >= 55 ? '今年运势还不错，好好把握，冲鸭～' : '今年运势偏弱，先稳住为主，别急着冒进～');
     }
   }
 
@@ -1011,49 +1011,49 @@ function determineBaZiPattern(chart) {
   if (mainPattern === '比肩格') {
     if (monthBranch === getLuoLuPosition(dm)) {
       mainPattern = '建禄格';
-      patternDesc = '月令为日主之禄，主自身强健，独立自主，适合创业';
+      patternDesc = '月令为日主之禄，自身根基扎实，独立性强，很适合自己创业打拼';
     } else if (monthBranch === getYangRenPosition(dm)) {
       mainPattern = '月刃格（羊刃格）';
-      patternDesc = '月令为日主之刃，主性格刚烈，武职利达，需官杀制伏';
+      patternDesc = '月令为日主之刃，性格刚烈果断，有魄力，宜配官杀来调和，武职或高压行业反利';
     } else {
       mainPattern = '比肩格';
-      patternDesc = '月令比肩，主为人刚健，独立自主';
+      patternDesc = '月令比肩，为人刚健踏实，靠自己的本事吃饭，越独立越旺';
     }
   }
 
   // 正官格
   if (mainPattern === '正官格') {
-    patternDesc = '月令正官，主为人端正，守纪律，适合公职管理';
+    patternDesc = '月令正官，为人端正有规矩，适合公职或管理类方向，稳中向好';
   }
   // 七杀格
   if (mainPattern === '七杀格') {
     mainPattern = '七杀格（偏官格）';
-    patternDesc = '月令七杀，主为人刚烈果断，有将帅之才，需食神制杀或印化';
+    patternDesc = '月令七杀，性格果断有冲劲，具备将帅之才，需食神制杀或印星化解，方为美格';
   }
   // 正财格
   if (mainPattern === '正财格') {
-    patternDesc = '月令正财，主为人勤俭，财运稳定，适合经商理财';
+    patternDesc = '月令正财，为人勤俭踏实，财运稳健，适合经商理财，细水长流';
   }
   // 偏财格
   if (mainPattern === '偏财格') {
-    patternDesc = '月令偏财，主为人慷慨大方，财来财去，适合投资经营';
+    patternDesc = '月令偏财，为人慷慨有眼光，财来财去波动大，适合投资经营，注意节奏把控';
   }
   // 正印格
   if (mainPattern === '正印格') {
-    patternDesc = '月令正印，主为人慈祥，学业有成，适合教育文化';
+    patternDesc = '月令正印，为人慈祥和善，学业有成，适合教育文化方向，贵人缘好';
   }
   // 偏印格
   if (mainPattern === '偏印格') {
     mainPattern = '偏印格（枭神格）';
-    patternDesc = '月令偏印，主为人聪慧多变，适合技艺宗教，忌见食神';
+    patternDesc = '月令偏印，为人聪慧有巧思，适合技艺、研究或宗教领域，忌见食神被夺';
   }
   // 食神格
   if (mainPattern === '食神格') {
-    patternDesc = '月令食神，主为人温和厚道，衣食丰足，适合艺术饮食';
+    patternDesc = '月令食神，为人温和厚道，衣食丰足，适合艺术饮食方向，天生自带福气';
   }
   // 伤官格
   if (mainPattern === '伤官格') {
-    patternDesc = '月令伤官，主人才华横溢，桀骜不驯，宜伤官配印或伤官生财';
+    patternDesc = '月令伤官，才华横溢但个性鲜明，宜伤官配印或伤官生财，把聪明用在正道上';
 
     // 伤官见官
     var hasZhengGuan = false;
@@ -1094,16 +1094,16 @@ function determineBaZiPattern(chart) {
   if (maxCount >= 7) {
     if (maxEl === dmEl) {
       patterns.unshift('从强格');
-      patternDesc = '日主极旺，全盘同党，从强则贵，逆之则凶';
+      patternDesc = '日主极旺，全盘同党，顺势而为则贵，逆势强拼反而不利';
     } else if (maxEl === RESTRAINS_EL[dmEl]) {
       patterns.unshift('从杀格');
-      patternDesc = '日主极弱，杀星极旺，从杀则贵，逆之则凶';
+      patternDesc = '日主极弱，杀星极旺，顺势从杀则贵，逆之反生波折';
     } else if (maxEl === I_RESTRAIN_EL[dmEl]) {
       patterns.unshift('从财格');
-      patternDesc = '日主极弱，财星极旺，从财则富，逆之则凶';
+      patternDesc = '日主极弱，财星极旺，顺势从财则富，逆之反不利';
     } else if (maxEl === GENERATES_ME_EL[dmEl]) {
       patterns.unshift('从儿格');
-      patternDesc = '日主极弱，食伤极旺，从儿则秀，逆之则凶';
+      patternDesc = '日主极弱，食伤极旺，顺势从儿则秀气发越，逆之反不美';
     }
   }
 
@@ -1385,27 +1385,27 @@ function calculateBaZiDaily(chart) {
 
   // 事业
   var careerTenGods = ['正官', '正印', '食神', '比肩'];
-  aspects.career = careerTenGods.indexOf(dayTenGod) >= 0 ? '今日利于事业，可积极推进工作计划' :
-    (dayTenGod === '七杀' ? '工作压力大，需谨慎行事' :
-    dayTenGod === '伤官' ? '才华外露但易得罪人，注意言辞' :
-    dayTenGod === '偏财' ? '适合商业谈判，有偏业之喜' : '事业平稳，按部就班');
+  aspects.career = careerTenGods.indexOf(dayTenGod) >= 0 ? '今天利于事业，积极推工作计划就对了～' :
+    (dayTenGod === '七杀' ? '工作压力有点大，稳一点，别硬来' :
+    dayTenGod === '伤官' ? '才华挡不住但容易得罪人，说话注意点哦～' :
+    dayTenGod === '偏财' ? '适合谈商业合作，偏业有惊喜～' : '事业平稳，按部就班就好');
 
   // 财运
   var wealthTenGods = ['正财', '偏财', '食神'];
-  aspects.wealth = wealthTenGods.indexOf(dayTenGod) >= 0 ? '今日财运不错，适合理财投资' :
-    (dayTenGod === '比肩' ? '花销增多，注意控制支出' :
-    dayTenGod === '劫财' ? '破财之象，不宜大额消费' : '财运平稳');
+  aspects.wealth = wealthTenGods.indexOf(dayTenGod) >= 0 ? '今天财运不错，适合理财投资～' :
+    (dayTenGod === '比肩' ? '花销可能增多，注意控制一下支出哦～' :
+    dayTenGod === '劫财' ? '今天容易破财，大额消费先缓缓' : '财运平稳，不急不躁');
 
   // 感情
   var loveTenGods = ['正财', '正官', '正印'];
-  aspects.love = loveTenGods.indexOf(dayTenGod) >= 0 ? '今日感情运佳，适合约会表白' :
-    (dayTenGod === '伤官' ? '易生口角，注意沟通方式' :
-    dayTenGod === '七杀' ? '感情压力，多包容理解' : '感情平稳');
+  aspects.love = loveTenGods.indexOf(dayTenGod) >= 0 ? '今天感情运超好，适合约会表白～' :
+    (dayTenGod === '伤官' ? '容易拌嘴，注意沟通方式，温柔一点～' :
+    dayTenGod === '七杀' ? '感情有点小压力，多包容多理解就好啦' : '感情平稳，平淡也幸福');
 
   // 健康
-  aspects.health = dayTenGod === '七杀' ? '注意心血管和压力' :
-    dayTenGod === '偏印' ? '注意精神状态，多休息' :
-    dayTenGod === '食神' ? '脾胃运佳，饮食有节' : '健康平稳，注意作息';
+  aspects.health = dayTenGod === '七杀' ? '留意心血管和压力，别太紧绷' :
+    dayTenGod === '偏印' ? '精神状态可能一般，多休息别熬夜' :
+    dayTenGod === '食神' ? '脾胃运化不错，吃好喝好心情好' : '健康平稳，注意作息就好';
 
   // 方位
   var dirMap = { '木':'东方', '火':'南方', '土':'中央', '金':'西方', '水':'北方' };
