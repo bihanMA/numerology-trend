@@ -193,6 +193,112 @@ function getKongWang(dayStem, dayBranch) {
   return [];
 }
 
+// ============ 新增神煞表 ============
+
+// 太极贵人 (以日干查)
+var TAI_JI_GUI_REN = {
+  '甲': ['子','午'], '乙': ['子','午'], '丙': ['卯','酉'], '丁': ['卯','酉'],
+  '戊': ['辰','戌','丑','未'], '己': ['辰','戌','丑','未'],
+  '庚': ['寅','亥'], '辛': ['寅','亥'], '壬': ['巳','申'], '癸': ['巳','申']
+};
+
+// 福星贵人 (以日干查)
+var FU_XING_GUI_REN = {
+  '甲': ['丑','未'], '乙': ['丑','未'], '丙': ['酉','亥'], '丁': ['酉','亥'],
+  '戊': ['申'], '己': ['申'], '庚': ['卯'], '辛': ['卯'],
+  '壬': ['巳'], '癸': ['巳']
+};
+
+// 禄神 (以日干查)
+var LU_SHEN = {
+  '甲':'寅','乙':'卯','丙':'巳','丁':'午','戊':'巳','己':'午',
+  '庚':'申','辛':'酉','壬':'亥','癸':'子'
+};
+
+// 金舆 (以日干查)
+var JIN_YU = {
+  '甲':'辰','乙':'巳','丙':'未','丁':'申','戊':'未','己':'申',
+  '庚':'戌','辛':'亥','壬':'丑','癸':'寅'
+};
+
+// 天德贵人 (以月支查天干/地支)
+var TIAN_DE = {
+  '寅':'丁','卯':'申','辰':'壬','巳':'辛','午':'亥','未':'甲',
+  '申':'癸','酉':'寅','戌':'丙','亥':'乙','子':'巳','丑':'庚'
+};
+
+// 月德贵人 (以月支查天干)
+var YUE_DE = {
+  '寅':'丙','卯':'甲','辰':'壬','巳':'庚','午':'丙','未':'甲',
+  '申':'壬','酉':'庚','戌':'丙','亥':'甲','子':'壬','丑':'庚'
+};
+
+// 魁罡 (仅日柱: 庚辰、壬辰、庚戌、戊戌)
+var KUI_GANG_DAYS = ['庚辰','壬辰','庚戌','戊戌'];
+
+// 金神 (以日干查时支)
+var JIN_SHEN = {
+  '甲': ['巳','酉','丑'], '己': ['巳','酉','丑'],
+  '乙': ['子','午','卯'], '庚': ['子','午','卯'],
+  '丙': ['寅','申','巳'], '辛': ['寅','申','巳'],
+  '丁': ['亥','卯','未'], '壬': ['亥','卯','未'],
+  '戊': ['申','子','辰'], '癸': ['申','子','辰']
+};
+
+// 孤辰寡宿 (以年支查)
+var GU_GUA_GROUP = {
+  '亥': { gu: '寅', gua: '戌' }, '子': { gu: '寅', gua: '戌' }, '丑': { gu: '寅', gua: '戌' },
+  '寅': { gu: '巳', gua: '丑' }, '卯': { gu: '巳', gua: '丑' }, '辰': { gu: '巳', gua: '丑' },
+  '巳': { gu: '申', gua: '辰' }, '午': { gu: '申', gua: '辰' }, '未': { gu: '申', gua: '辰' },
+  '申': { gu: '亥', gua: '未' }, '酉': { gu: '亥', gua: '未' }, '戌': { gu: '亥', gua: '未' }
+};
+
+// 灾煞 (以年支查, 将星之冲)
+var ZAI_SHA_GROUP = {
+  '寅':'子','午':'子','戌':'子',
+  '巳':'卯','酉':'卯','丑':'卯',
+  '申':'午','子':'午','辰':'午',
+  '亥':'酉','卯':'酉','未':'酉'
+};
+
+// 神煞释义表
+var SHENSHA_DESC = {
+  '天乙贵人': { type: '吉', desc: '逢凶化吉，贵人相助' },
+  '文昌': { type: '吉', desc: '聪明好学，文采出众' },
+  '太极贵人': { type: '吉', desc: '聪慧好玄学，易通术数' },
+  '福星贵人': { type: '吉', desc: '福禄深厚，一生多福' },
+  '禄神': { type: '吉', desc: '衣食丰足，财禄不缺' },
+  '金舆': { type: '吉', desc: '车马丰足，贵人扶持' },
+  '天德贵人': { type: '吉', desc: '逢凶化吉，万事和谐' },
+  '月德贵人': { type: '吉', desc: '心地善良，灾消福至' },
+  '羊刃': { type: '凶', desc: '刚毅果断，易有刑伤' },
+  '桃花': { type: '凶', desc: '人缘好，异性缘佳' },
+  '驿马': { type: '凶', desc: '奔波走动，出行有利' },
+  '华盖': { type: '中', desc: '聪明孤僻，喜宗教艺术' },
+  '将星': { type: '吉', desc: '有领导力，权威显赫' },
+  '劫煞': { type: '凶', desc: '易有意外损失，需防破财' },
+  '灾煞': { type: '凶', desc: '主病灾，需注意安全' },
+  '亡神': { type: '凶', desc: '易有失意，需防口舌' },
+  '红鸾': { type: '吉', desc: '婚姻喜庆，感情顺遂' },
+  '天喜': { type: '吉', desc: '喜庆吉利，婚姻有成' },
+  '魁罡': { type: '凶', desc: '性格刚强，有威权但易刑伤' },
+  '金神': { type: '凶', desc: '刚毅不服输，富贵需奔波' },
+  '孤辰': { type: '凶', desc: '男命孤僻，婚姻稍迟' },
+  '寡宿': { type: '凶', desc: '女命清冷，感情多波折' },
+  '空亡': { type: '中', desc: '逢空则虚，吉凶减半' }
+};
+
+function addShensha(shensha, name, branch, pillarIdx, pillarNames) {
+  var descObj = SHENSHA_DESC[name] || { type: '中', desc: '' };
+  shensha.push({
+    name: name,
+    branch: branch,
+    pillar: pillarNames[pillarIdx],
+    type: descObj.type,
+    desc: descObj.desc
+  });
+}
+
 function calculateShensha(chart) {
   var dm = chart.dayMaster;
   var yearBranch = chart.yearPillar.branch;
@@ -202,85 +308,141 @@ function calculateShensha(chart) {
 
   var branches = [yearBranch, monthBranch, dayBranch, hourBranch];
   var pillarNames = ['年柱', '月柱', '日柱', '时柱'];
-
   var shensha = [];
+  var added = {};
 
-  // 天乙贵人 (以日干查)
+  function tryAdd(name, branch) {
+    for (var i = 0; i < branches.length; i++) {
+      if (branches[i] === branch) {
+        var key = name + '_' + i;
+        if (!added[key]) {
+          added[key] = true;
+          addShensha(shensha, name, branch, i, pillarNames);
+        }
+      }
+    }
+  }
+
+  // === 以日干查的吉神 ===
   var tyg = TIAN_YI_GUI_REN[dm] || [];
-  tyg.forEach(function(b) {
-    if (branches.indexOf(b) >= 0) {
-      shensha.push({ name: '天乙贵人', branch: b, pillar: pillarNames[branches.indexOf(b)], desc: '逢凶化吉, 贵人相助' });
-    }
-  });
+  tyg.forEach(function(b) { tryAdd('天乙贵人', b); });
 
-  // 文昌 (以日干查)
   var wc = WEN_CHANG[dm];
-  if (wc && branches.indexOf(wc) >= 0) {
-    shensha.push({ name: '文昌', branch: wc, pillar: pillarNames[branches.indexOf(wc)], desc: '聪明好学, 文采出众' });
-  }
+  if (wc) tryAdd('文昌', wc);
 
-  // 羊刃 (以日干查)
+  var tj = TAI_JI_GUI_REN[dm] || [];
+  tj.forEach(function(b) { tryAdd('太极贵人', b); });
+
+  var fx = FU_XING_GUI_REN[dm] || [];
+  fx.forEach(function(b) { tryAdd('福星贵人', b); });
+
+  var ls = LU_SHEN[dm];
+  if (ls) tryAdd('禄神', ls);
+
+  var jy = JIN_YU[dm];
+  if (jy) tryAdd('金舆', jy);
+
+  // === 以日干查的凶煞 ===
   var yr = YANG_REN[dm];
-  if (yr && branches.indexOf(yr) >= 0) {
-    shensha.push({ name: '羊刃', branch: yr, pillar: pillarNames[branches.indexOf(yr)], desc: '刚毅果断, 易有刑伤' });
-  }
+  if (yr) tryAdd('羊刃', yr);
 
-  // 桃花 (以年支和日支查)
-  var th = TAO_HUA_GROUP[yearBranch];
-  if (th && branches.indexOf(th) >= 0) {
-    shensha.push({ name: '桃花', branch: th, pillar: pillarNames[branches.indexOf(th)], desc: '人缘好, 异性缘佳' });
-  }
+  // === 以年支和日支查 (三合局类) ===
+  [yearBranch, dayBranch].forEach(function(refBranch) {
+    var th = TAO_HUA_GROUP[refBranch];
+    if (th) tryAdd('桃花', th);
 
-  // 驿马 (以年支和日支查)
-  var ym = YI_MA_GROUP[yearBranch];
-  if (ym && branches.indexOf(ym) >= 0) {
-    shensha.push({ name: '驿马', branch: ym, pillar: pillarNames[branches.indexOf(ym)], desc: '奔波走动, 出行有利' });
-  }
+    var ym = YI_MA_GROUP[refBranch];
+    if (ym) tryAdd('驿马', ym);
 
-  // 华盖 (以年支和日支查)
-  var hg = HUA_GAI_GROUP[yearBranch];
-  if (hg && branches.indexOf(hg) >= 0) {
-    shensha.push({ name: '华盖', branch: hg, pillar: pillarNames[branches.indexOf(hg)], desc: '聪明孤僻, 喜宗教艺术' });
-  }
+    var hg = HUA_GAI_GROUP[refBranch];
+    if (hg) tryAdd('华盖', hg);
 
-  // 将星
-  var jx = JIANG_XING_GROUP[yearBranch];
-  if (jx && branches.indexOf(jx) >= 0) {
-    shensha.push({ name: '将星', branch: jx, pillar: pillarNames[branches.indexOf(jx)], desc: '有领导力, 权威显赫' });
-  }
+    var jx = JIANG_XING_GROUP[refBranch];
+    if (jx) tryAdd('将星', jx);
 
-  // 劫煞
-  var js = JIE_SHA_GROUP[yearBranch];
-  if (js && branches.indexOf(js) >= 0) {
-    shensha.push({ name: '劫煞', branch: js, pillar: pillarNames[branches.indexOf(js)], desc: '易有意外损失, 需防破财' });
-  }
+    var js = JIE_SHA_GROUP[refBranch];
+    if (js) tryAdd('劫煞', js);
 
-  // 亡神
-  var ws = WANG_SHEN_GROUP[yearBranch];
-  if (ws && branches.indexOf(ws) >= 0) {
-    shensha.push({ name: '亡神', branch: ws, pillar: pillarNames[branches.indexOf(ws)], desc: '易有失意, 需防口舌' });
-  }
+    var ws = WANG_SHEN_GROUP[refBranch];
+    if (ws) tryAdd('亡神', ws);
 
-  // 红鸾 (以年支查)
+    var zs = ZAI_SHA_GROUP[refBranch];
+    if (zs) tryAdd('灾煞', zs);
+  });
+
+  // === 以年支查 ===
   var hl = HONG_LUAN[yearBranch];
-  if (hl && branches.indexOf(hl) >= 0) {
-    shensha.push({ name: '红鸾', branch: hl, pillar: pillarNames[branches.indexOf(hl)], desc: '婚姻喜庆, 感情顺遂' });
-  }
+  if (hl) tryAdd('红鸾', hl);
 
-  // 天喜 (以年支查)
   var tx = TIAN_XI[yearBranch];
-  if (tx && branches.indexOf(tx) >= 0) {
-    shensha.push({ name: '天喜', branch: tx, pillar: pillarNames[branches.indexOf(tx)], desc: '喜庆吉利, 婚姻有成' });
+  if (tx) tryAdd('天喜', tx);
+
+  // 孤辰寡宿 (以年支查, 男孤辰女寡宿)
+  var gg = GU_GUA_GROUP[yearBranch];
+  if (gg) {
+    if (gg.gu) tryAdd('孤辰', gg.gu);
+    if (gg.gua) tryAdd('寡宿', gg.gua);
   }
 
-  // 空亡 (以日柱查)
-  var kw = getKongWang(chart.dayPillar.stem, chart.dayPillar.branch);
-  kw.forEach(function(b) {
-    if (branches.indexOf(b) >= 0) {
-      shensha.push({ name: '空亡', branch: b, pillar: pillarNames[branches.indexOf(b)], desc: '逢空则虚, 吉凶减半' });
+  // === 以月支查 ===
+  var td = TIAN_DE[monthBranch];
+  if (td) {
+    var allStems = [chart.yearPillar.stem, chart.monthPillar.stem, chart.dayPillar.stem, chart.hourPillar.stem];
+    var isStem = BC_STEMS.indexOf(td) >= 0;
+    if (isStem) {
+      for (var si = 0; si < allStems.length; si++) {
+        if (allStems[si] === td) {
+          var key = '天德贵人_' + si;
+          if (!added[key]) {
+            added[key] = true;
+            addShensha(shensha, '天德贵人', td, si, pillarNames);
+          }
+        }
+      }
+    } else {
+      tryAdd('天德贵人', td);
+    }
+  }
+
+  var yd = YUE_DE[monthBranch];
+  if (yd) {
+    var ydAllStems = [chart.yearPillar.stem, chart.monthPillar.stem, chart.dayPillar.stem, chart.hourPillar.stem];
+    for (var yi = 0; yi < ydAllStems.length; yi++) {
+      if (ydAllStems[yi] === yd) {
+        var ykey = '月德贵人_' + yi;
+        if (!added[ykey]) {
+          added[ykey] = true;
+          addShensha(shensha, '月德贵人', yd, yi, pillarNames);
+        }
+      }
+    }
+  }
+
+  // === 魁罡 (仅查日柱) ===
+  var dayGanZhi = chart.dayPillar.stem + chart.dayPillar.branch;
+  if (KUI_GANG_DAYS.indexOf(dayGanZhi) >= 0) {
+    addShensha(shensha, '魁罡', chart.dayPillar.branch, 2, pillarNames);
+  }
+
+  // === 金神 (以日干查时支) ===
+  var js2 = JIN_SHEN[dm] || [];
+  js2.forEach(function(b) {
+    if (b === hourBranch) {
+      addShensha(shensha, '金神', b, 3, pillarNames);
     }
   });
 
+  // === 空亡 (以日柱查) ===
+  var kw = getKongWang(chart.dayPillar.stem, chart.dayPillar.branch);
+  kw.forEach(function(b) { tryAdd('空亡', b); });
+
+  // 按柱位分组返回
+  var byPillar = { '年柱': [], '月柱': [], '日柱': [], '时柱': [] };
+  shensha.forEach(function(s) {
+    if (byPillar[s.pillar]) byPillar[s.pillar].push(s);
+  });
+
+  chart.shenshaByPillar = byPillar;
   return shensha;
 }
 
