@@ -531,15 +531,27 @@
     // 高亮掌诀图中的宫位
     highlightPalmPalace(narrative.resultName);
 
-    // 三传
+    // 三传过程 (一行排列，含各自解读)
     var transDiv = el('div', 'xlr-three-trans');
     narrative.threeTransmissions.forEach(function(t, idx) {
       var item = el('div', 'xlr-trans-item');
+      var jiLevel = '';
+      var jiColor = '';
+      var score = { '大安': 2, '留连': -1, '速喜': 3, '赤口': -2, '小吉': 2, '空亡': -3 }[t.position.name] || 0;
+      if (score >= 2) { jiLevel = '吉'; jiColor = '#5a8a3a'; }
+      else if (score === 0) { jiLevel = '中'; jiColor = '#888'; }
+      else if (score > 0) { jiLevel = '小吉'; jiColor = '#7a9a5a'; }
+      else if (score === -1) { jiLevel = '小阻'; jiColor = '#b08040'; }
+      else { jiLevel = '凶'; jiColor = '#a04030'; }
+
       item.innerHTML =
         '<div class="trans-label">' + t.label + '</div>' +
         '<div class="trans-name" style="color:' + t.position.color + '">' + t.position.name + '</div>' +
-        '<div style="font-size:0.65rem;color:' + getCSS('--muted') + '">' +
-          t.position.element + ' · ' + t.position.deity + '</div>';
+        '<div class="trans-meta">' +
+          t.position.element + ' · ' + t.position.deity +
+          '<span class="trans-level" style="color:' + jiColor + '">' + jiLevel + '</span>' +
+        '</div>' +
+        '<div class="trans-interp">' + (t.interp ? t.interp.detail : '') + '</div>';
       transDiv.appendChild(item);
       if (idx < 2) {
         transDiv.appendChild(el('div', 'trans-arrow', '→'));
@@ -547,7 +559,21 @@
     });
     container.appendChild(transDiv);
 
-    // 主结果
+    // 趋势分析 (转机判断)
+    var trendDiv = el('div', 'xlr-trend');
+    var trendColor = narrative.totalScore >= 2 ? '#5a8a3a' : narrative.totalScore <= -2 ? '#a04030' : '#888';
+    trendDiv.innerHTML =
+      '<div class="trend-header">' +
+        '<span class="trend-label">趋势分析</span>' +
+        '<span class="trend-tag" style="color:' + trendColor + '">' + narrative.trend + '</span>' +
+      '</div>' +
+      '<div class="trend-desc">' + narrative.turnDesc + '</div>';
+    if (narrative.hasTurn) {
+      trendDiv.innerHTML += '<div class="turn-tip">有转机</div>';
+    }
+    container.appendChild(trendDiv);
+
+    // 主结果 (末传)
     var mainDiv = el('div', 'xlr-main-result');
     var tagsHtml =
       '<span class="xlr-tag" style="background:' + narrative.resultColor + ';color:#fff">' + narrative.resultName + '</span>' +
@@ -558,8 +584,14 @@
       '<div class="result-name" style="color:' + narrative.resultColor + '">' + narrative.resultName + '</div>' +
       '<div class="result-tags">' + tagsHtml + '</div>' +
       '<div class="xlr-verse">' + narrative.verse.replace(/\n/g, '<br>') + '</div>';
-
     container.appendChild(mainDiv);
+
+    // 行动建议
+    var adviceDiv = el('div', 'xlr-advice');
+    adviceDiv.innerHTML =
+      '<div class="advice-title">行动建议</div>' +
+      '<div class="advice-detail">' + narrative.actionAdvice + '</div>';
+    container.appendChild(adviceDiv);
 
     // 解读
     var interpDiv = el('div', 'xlr-interp');
@@ -569,9 +601,7 @@
       '<div class="interp-detail">' + narrative.interpretation + '</div>' +
       '<div class="xlr-source">依据：「' + narrative.verse.split('\n')[0] +
         '……」（' + narrative.resultName + '断辞）' +
-        '（《增补玉匣记·李淳风六壬时课》）</div>' +
-      '<div class="xlr-source" style="color:' + getCSS('--accent') + '">提示：' +
-        narrative.interpResult + '。' + narrative.interpretation + '</div>';
+        '（《增补玉匣记·李淳风六壬时课》）</div>';
     container.appendChild(interpDiv);
 
     // 显示操作按钮
@@ -588,11 +618,42 @@
     var inputDay = parseInt($('birth-day').value);
     var hour = parseInt($('birth-hour').value);
     var gender = $('birth-gender').value;
+    var trueSolar = $('birth-truesolar') ? $('birth-truesolar').value : 'off';
+    var longitude = $('birth-longitude') ? parseFloat($('birth-longitude').value) : 120;
 
     if (!inputYear || !inputMonth || !inputDay) {
       alert('请填写完整的出生年月日');
       return;
     }
+
+    // 真太阳时修正
+    var trueSolarNote = '';
+    if (trueSolar === 'on' && longitude !== 120) {
+      var correctionMin = (longitude - 120) * 4;
+      var correctedHour = hour + correctionMin / 60;
+      if (correctedHour < 0) correctedHour += 24;
+      if (correctedHour >= 24) correctedHour -= 24;
+      var oldShichen = getShichen(hour);
+      var newShichen = getShichen(Math.floor(correctedHour));
+      if (oldShichen !== newShichen) {
+        trueSolarNote = '真太阳时修正：经度' + longitude + '°，时辰由' +
+          SHICHEN_NAMES[oldShichen] + '时变为' + SHICHEN_NAMES[newShichen] + '时';
+      }
+      hour = Math.floor(correctedHour);
+    }
+
+    // 时辰临界提醒
+    var boundaryNote = '';
+    var boundaryHours = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23];
+    for (var bi = 0; bi < boundaryHours.length; bi++) {
+      if (Math.abs(hour - boundaryHours[bi]) <= 0.25) {
+        boundaryNote = '出生时间接近时辰交界（' + boundaryHours[bi] + ':00），时辰变动会导致全盘改变，请确认准确时间';
+        break;
+      }
+    }
+
+    state.timeBoundaryNote = boundaryNote;
+    state.trueSolarNote = trueSolarNote;
 
     var year, month, day;
     if (calType === 'lunar' && window.LunarCalendar) {
@@ -688,6 +749,16 @@
     var container = $('bazi-chart-area');
     container.innerHTML = '';
 
+    // 时辰临界提醒 & 真太阳时修正提示
+    if (state.timeBoundaryNote || state.trueSolarNote) {
+      var noteDiv = el('div', 'time-note-box');
+      var noteHtml = '';
+      if (state.trueSolarNote) noteHtml += '<div class="tn-item">' + state.trueSolarNote + '</div>';
+      if (state.timeBoundaryNote) noteHtml += '<div class="tn-item tn-warn">' + state.timeBoundaryNote + '</div>';
+      noteDiv.innerHTML = noteHtml;
+      container.appendChild(noteDiv);
+    }
+
     // 四柱
     var grid = el('div', 'bazi-pillars');
     var pillarNames = ['年柱', '月柱', '日柱', '时柱'];
@@ -699,17 +770,15 @@
           return hs.stem + '(' + hs.tenGod + ')';
         }).join(' ');
       }
-      // 按柱位分组神煞
+      // 按柱位分组神煞 (使用新的byPillar分组)
       var pillarShensha = '';
-      if (chart.shensha && chart.shensha.length > 0) {
-        var ssList = chart.shensha.filter(function(ss) {
-          return ss.pillar === pillarNames[idx];
-        });
-        if (ssList.length > 0) {
-          pillarShensha = ssList.map(function(ss) {
-            return '<span class="bp-ss" title="' + (ss.desc || '') + '">' + ss.name + '</span>';
-          }).join(' ');
-        }
+      var ssByPillar = chart.shenshaByPillar || {};
+      var ssList = ssByPillar[pillarNames[idx]] || chart.shensha.filter(function(ss) { return ss.pillar === pillarNames[idx]; });
+      if (ssList.length > 0) {
+        pillarShensha = ssList.map(function(ss) {
+          var cls = ss.type === '吉' ? 'bp-ss-ji' : ss.type === '凶' ? 'bp-ss-xiong' : 'bp-ss-zhong';
+          return '<span class="bp-ss ' + cls + '" title="' + (ss.desc || '') + '">' + ss.name + '</span>';
+        }).join('');
       }
       div.innerHTML =
         '<div class="bp-label">' + p.name + '</div>' +
@@ -1570,6 +1639,64 @@
     container.appendChild(impDiv);
   }
 
+  // ============ 一键复制 ============
+  function copyAllResults() {
+    var text = '';
+    var chart = state.baziChart;
+    if (chart) {
+      text += '=== 八字排盘 ===\n';
+      text += '日主：' + chart.dayMaster + '(' + chart.dayMasterElement + ')\n';
+      var pillars = getFullChartInfo(chart);
+      var pNames = ['年柱', '月柱', '日柱', '时柱'];
+      pillars.forEach(function(p, idx) {
+        text += pNames[idx] + ': ' + p.stem + p.branch + ' (' + p.tenGod + ') 纳音:' + (p.nayin || '') + '\n';
+        if (p.hiddenStems && p.hiddenStems.length > 0) {
+          text += '  藏干: ' + p.hiddenStems.map(function(hs) { return hs.stem + '(' + hs.tenGod + ')'; }).join(' ') + '\n';
+        }
+        var ssByP = chart.shenshaByPillar || {};
+        var ssList = ssByP[pNames[idx]] || [];
+        if (ssList.length > 0) {
+          text += '  神煞: ' + ssList.map(function(s) { return s.name; }).join('、') + '\n';
+        }
+      });
+      var pattern = determineBaZiPattern(chart);
+      text += '格局: ' + pattern.mainPattern + '\n';
+      if (chart.shichenName) text += '时辰: ' + chart.shichenName + '时 (' + chart.shichenRange + ')\n';
+      if (state.trueSolarNote) text += state.trueSolarNote + '\n';
+      if (state.timeBoundaryNote) text += '注意: ' + state.timeBoundaryNote + '\n';
+      text += '\n';
+    }
+    if (state.ziweiChart) {
+      text += '=== 紫微斗数 ===\n';
+      var dm = state.baziChart ? state.baziChart.dayMaster : '';
+      text += '命宫主星: ' + (state.ziweiChart.palaces && state.ziweiChart.palaces[0] ? (state.ziweiChart.palaces[0].mainStars || []).join('、') : '') + '\n';
+      text += '\n';
+    }
+    if (state.lastXLRResult) {
+      var xlr = generateXLRNarrative(state.lastXLRResult, state.xlrCategory || '测吉凶');
+      text += '=== 小六壬 ===\n';
+      text += '三传: ' + xlr.threeTransmissions.map(function(t) { return t.label + '-' + t.position.name; }).join(' → ') + '\n';
+      text += '趋势: ' + xlr.trend + '\n';
+      text += '建议: ' + xlr.actionAdvice + '\n';
+      text += '\n';
+    }
+    text += '（全部内容仅传统文化研究参考，不作人生决策依据）\n';
+
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      alert('排盘结果已复制到剪贴板');
+    } catch(e) {
+      alert('复制失败，请手动选中文本');
+    }
+    document.body.removeChild(ta);
+  }
+
   // ============ 初始化 ============
   function init() {
     setupTopBar();
@@ -1590,6 +1717,32 @@
         renderXLRResult(result);
       });
     });
+
+    // 真太阳时开关
+    var tsSelect = $('birth-truesolar');
+    if (tsSelect) {
+      tsSelect.addEventListener('change', function() {
+        var lgGroup = $('longitude-group');
+        if (lgGroup) lgGroup.style.display = this.value === 'on' ? '' : 'none';
+      });
+    }
+
+    // 模块折叠
+    document.querySelectorAll('.module-header').forEach(function(h) {
+      h.addEventListener('click', function() {
+        var card = this.parentElement;
+        card.classList.toggle('collapsed');
+      });
+      h.style.cursor = 'pointer';
+    });
+
+    // 一键复制
+    var copyBtn = $('btn-copy-all');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        copyAllResults();
+      });
+    }
 
     // 自动排盘
     calculateAll();
