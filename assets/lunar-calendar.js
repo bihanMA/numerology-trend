@@ -167,9 +167,9 @@
   // ============ 公历转农历 ============
   function solar2lunar(year, month, day) {
     // 基准日: 1900-01-31 = 农历 1900年正月初一
-    var baseDate = new Date(1900, 0, 31);
-    var objDate = new Date(year, month - 1, day);
-    var offset = Math.floor((objDate - baseDate) / 86400000);
+    var baseTime = Date.UTC(1900, 0, 31);
+    var objTime = Date.UTC(year, month - 1, day);
+    var offset = Math.floor((objTime - baseTime) / 86400000);
 
     var i, temp = 0;
     var lunarYear;
@@ -262,13 +262,14 @@
 
     offset += lunarDay - 1;
 
-    var baseDate = new Date(1900, 0, 31);
-    var result = new Date(baseDate.getTime() + offset * 86400000);
+    var baseTime = Date.UTC(1900, 0, 31);
+    var resultTime = baseTime + offset * 86400000;
+    var result = new Date(resultTime);
 
     return {
-      year: result.getFullYear(),
-      month: result.getMonth() + 1,
-      day: result.getDate()
+      year: result.getUTCFullYear(),
+      month: result.getUTCMonth() + 1,
+      day: result.getUTCDate()
     };
   }
 
