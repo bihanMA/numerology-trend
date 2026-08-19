@@ -37,11 +37,28 @@
     var now = new Date();
     var utc = now.getTime() + now.getTimezoneOffset() * 60000;
     var beijing = new Date(utc + 8 * 3600000);
+    var solarYear = beijing.getFullYear();
+    var solarMonth = beijing.getMonth() + 1;
+    var solarDay = beijing.getDate();
+    var hour = beijing.getHours();
+
+    var lunarMonth = solarMonth;
+    var lunarDay = solarDay;
+    if (window.LunarCalendar) {
+      var lunar = LunarCalendar.solar2lunar(solarYear, solarMonth, solarDay);
+      if (lunar) {
+        lunarMonth = lunar.month;
+        lunarDay = lunar.day;
+      }
+    }
     return {
-      year: beijing.getFullYear(),
-      month: beijing.getMonth() + 1,
-      day: beijing.getDate(),
-      hour: beijing.getHours()
+      year: solarYear,
+      month: lunarMonth,
+      day: lunarDay,
+      solarMonth: solarMonth,
+      solarDay: solarDay,
+      hour: hour,
+      isLunar: true
     };
   }
 
@@ -1136,7 +1153,13 @@
   }
 
   function renderRadarChart() {
+    if (typeof echarts === 'undefined') {
+      var dom0 = $('chart-radar');
+      if (dom0) dom0.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8rem">图表库未加载，请刷新页面</div>';
+      return;
+    }
     var current = state.yearlyTrends[state.selectedYearIdx];
+    if (!current) return;
     var baseScores = current.trend.scores.baseScore;
     var finalScores = current.trend.scores.finalScore;
     var accent = getCSS('--accent');
@@ -1150,10 +1173,11 @@
 
     var dom = $('chart-radar');
     if (!dom) return;
-    if (!state.radarChart) {
-      state.radarChart = echarts.init(dom, null, { renderer: 'svg' });
-      window.addEventListener('resize', function() { if (state.radarChart) state.radarChart.resize(); });
-    }
+    try {
+      if (!state.radarChart) {
+        state.radarChart = echarts.init(dom, null, { renderer: 'svg' });
+        window.addEventListener('resize', function() { if (state.radarChart) state.radarChart.resize(); });
+      }
 
     state.radarChart.setOption({
       animation: false,
@@ -1182,9 +1206,18 @@
         ]
       }]
     });
+    } catch(e) {
+      console.error('雷达图渲染失败:', e);
+      dom.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8rem">雷达图加载失败，请刷新重试</div>';
+    }
   }
 
   function renderTrendChart() {
+    if (typeof echarts === 'undefined') {
+      var dom0 = $('chart-trend');
+      if (dom0) dom0.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8rem">图表库未加载，请刷新页面</div>';
+      return;
+    }
     var dom = $('chart-trend');
     if (!dom) return;
     var accent = getCSS('--accent');
@@ -1194,6 +1227,7 @@
     var muted = getCSS('--muted');
     var rule = getCSS('--rule');
 
+    try {
     if (!state.trendChart) {
       state.trendChart = echarts.init(dom, null, { renderer: 'svg' });
       window.addEventListener('resize', function() { if (state.trendChart) state.trendChart.resize(); });
@@ -1247,6 +1281,10 @@
         renderBaZiRadar();
       }
     });
+    } catch(e) {
+      console.error('趋势图渲染失败:', e);
+      dom.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8rem">趋势图加载失败，请刷新重试</div>';
+    }
   }
 
   // ============ 紫微斗数 模块 ============
