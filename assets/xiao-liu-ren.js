@@ -151,10 +151,65 @@ function getInterpretation(positionName, category) {
 }
 
 function generateXLRNarrative(result, category) {
-  var third = result.third;
   var first = result.first;
   var second = result.second;
-  var interp = getInterpretation(third.name, category);
+  var third = result.third;
+
+  var interp1 = getInterpretation(first.name, category);
+  var interp2 = getInterpretation(second.name, category);
+  var interp3 = getInterpretation(third.name, category);
+
+  var jiMap = { '大安': 2, '留连': -1, '速喜': 3, '赤口': -2, '小吉': 2, '空亡': -3 };
+  var score1 = jiMap[first.name] || 0;
+  var score2 = jiMap[second.name] || 0;
+  var score3 = jiMap[third.name] || 0;
+  var totalScore = score1 + score2 + score3;
+
+  var trend = '';
+  var hasTurn = false;
+  var turnDesc = '';
+
+  if (score1 > 0 && score3 < 0) {
+    trend = '先吉后凶';
+    hasTurn = true;
+    turnDesc = '事情开头看着不错，但结局可能有变。别被一时的顺利冲昏头脑，后半段要格外小心，留好退路再往前走～';
+  } else if (score1 < 0 && score3 > 0) {
+    trend = '先凶后吉';
+    hasTurn = true;
+    turnDesc = '刚开始不太顺，别灰心，事情会慢慢好转的。坚持住，转机就在后面等着你，后半段会越来越好～';
+  } else if (score1 > 0 && score3 > 0 && score2 < 0) {
+    trend = '吉中受阻终吉';
+    hasTurn = true;
+    turnDesc = '整体是好的，但中间会有一段波折。稳住心态，别因为一时的不顺就放弃，挺过去就是柳暗花明～';
+  } else if (score1 < 0 && score3 < 0 && score2 > 0) {
+    trend = '凶中暂安终凶';
+    hasTurn = true;
+    turnDesc = '中间喘了口气，但整体走势不太理想。趁平稳的时候多做预防，别掉以轻心，后面可能还有考验～';
+  } else if (totalScore >= 5) {
+    trend = '三传皆吉';
+    turnDesc = '从开头到结尾都很顺，难得的好卦象！抓住机会放手去做，各方面都会事半功倍～';
+  } else if (totalScore <= -5) {
+    trend = '三传皆凶';
+    turnDesc = '整体走势偏弱，不太适合做重大决定。先稳住基本盘，等时机好转再行动，低调度过这段就好～';
+  } else {
+    trend = '平稳';
+    turnDesc = '三传起伏不大，整体平稳。不急不躁地推进，该做的做好，结果不会差到哪去～';
+  }
+
+  var actionAdvice = '';
+  if (totalScore >= 5) {
+    actionAdvice = '行动力拉满，主动出击，谈合作、办事情、做决定都很适合～';
+  } else if (totalScore >= 2) {
+    actionAdvice = '可以行动，但别太激进，稳中求进最靠谱～';
+  } else if (totalScore >= -2) {
+    actionAdvice = '保持观望，小事可以做，大事先缓一缓，等等再定～';
+  } else {
+    actionAdvice = '暂缓重大行动，先做好防护，等运势好转再出手～';
+  }
+
+  var firstRole = '起因';
+  var secondRole = '过程';
+  var thirdRole = '结局';
 
   return {
     category: category,
@@ -166,13 +221,18 @@ function generateXLRNarrative(result, category) {
     resultColor: third.color,
     verse: third.verse,
     summary: third.summary,
-    interpretation: interp.detail,
-    interpResult: interp.result,
+    interpretation: interp3.detail,
+    interpResult: interp3.result,
     threeTransmissions: [
-      { label: '初传月', position: first },
-      { label: '中传日', position: second },
-      { label: '末传时', position: third }
+      { label: '初传（起因）', position: first, interp: interp1, role: firstRole },
+      { label: '中传（过程）', position: second, interp: interp2, role: secondRole },
+      { label: '末传（结局）', position: third, interp: interp3, role: thirdRole }
     ],
+    trend: trend,
+    hasTurn: hasTurn,
+    turnDesc: turnDesc,
+    totalScore: totalScore,
+    actionAdvice: actionAdvice,
     inputs: result.inputs
   };
 }
