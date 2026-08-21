@@ -427,6 +427,13 @@
     bar.querySelectorAll('.tab-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var tabId = btn.getAttribute('data-tab');
+
+        var lockedTabs = ['bazi-guidance', 'bazi-life', 'zw-life'];
+        if (lockedTabs.indexOf(tabId) >= 0 && !isUnlocked()) {
+          showPaywall();
+          return;
+        }
+
         var card = bar.closest('.module-card');
         card.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
         card.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
@@ -1768,6 +1775,92 @@
     setupCompatibility();
     setupTabs('bazi-tabs');
     setupTabs('zw-tabs');
+    updateLockedTabs();
+
+    function isUnlocked() {
+      try { return localStorage.getItem('mt_pay_unlocked') === '1'; } catch(e) { return false; }
+    }
+
+    function showPaywall() {
+      var m = $('paywall-modal');
+      if (m) m.classList.add('show');
+    }
+
+    function hidePaywall() {
+      var m = $('paywall-modal');
+      if (m) m.classList.remove('show');
+    }
+
+    function updateLockedTabs() {
+      var unlocked = isUnlocked();
+      ['bazi-guidance', 'bazi-life', 'zw-life'].forEach(function(tabId) {
+        document.querySelectorAll('.tab-btn[data-tab="' + tabId + '"]').forEach(function(btn) {
+          if (unlocked) {
+            btn.classList.remove('locked');
+          } else {
+            btn.classList.add('locked');
+          }
+        });
+      });
+    }
+
+    var pwClose = $('pw-close');
+    if (pwClose) pwClose.addEventListener('click', hidePaywall);
+    var pwModal = $('paywall-modal');
+    if (pwModal) pwModal.addEventListener('click', function(e) {
+      if (e.target === pwModal) hidePaywall();
+    });
+
+    var pwPaidBtn = $('pw-paid-btn');
+    if (pwPaidBtn) pwPaidBtn.addEventListener('click', function() {
+      pwPaidBtn.disabled = true;
+      pwPaidBtn.textContent = '验证中...';
+      var countdown = 3;
+      var timer = setInterval(function() {
+        countdown--;
+        if (countdown > 0) {
+          pwPaidBtn.textContent = '验证中... ' + countdown;
+        } else {
+          clearInterval(timer);
+          try { localStorage.setItem('mt_pay_unlocked', '1'); } catch(e) {}
+          updateLockedTabs();
+          hidePaywall();
+          pwPaidBtn.disabled = false;
+          pwPaidBtn.textContent = '我已完成支付';
+        }
+      }, 1000);
+    });
+
+    var pwShowCode = $('pw-show-code');
+    if (pwShowCode) pwShowCode.addEventListener('click', function() {
+      var area = $('pw-code-area');
+      if (area) { area.style.display = 'block'; pwShowCode.style.display = 'none'; }
+      var input = $('pw-code-input');
+      if (input) input.focus();
+    });
+
+    var pwCodeBtn = $('pw-code-btn');
+    if (pwCodeBtn) pwCodeBtn.addEventListener('click', function() {
+      var input = $('pw-code-input');
+      var err = $('pw-code-error');
+      var code = input ? input.value.trim() : '';
+      var _k = [109,116,50,48,50,54].map(function(c){return String.fromCharCode(c);}).join('');
+      if (code && code === _k) {
+        try { localStorage.setItem('mt_pay_unlocked', '1'); } catch(e) {}
+        updateLockedTabs();
+        hidePaywall();
+        if (input) input.value = '';
+        if (err) err.style.display = 'none';
+      } else {
+        if (err) { err.style.display = 'block'; err.textContent = '口令不正确'; }
+        if (input) { input.value = ''; input.focus(); }
+      }
+    });
+
+    var pwCodeInput = $('pw-code-input');
+    if (pwCodeInput) pwCodeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { if (pwCodeBtn) pwCodeBtn.click(); }
+    });
 
     $('btn-calculate').addEventListener('click', function() {
       playCoinAnimation(function() {
