@@ -84,7 +84,7 @@
   // 小寒=285°, 大寒=300°, 立春=315°, 雨水=330°, 惊蛰=345°, 春分=0°/360°, ...
   function getSolarTermDate(year, termIndex) {
     // 节气对应的太阳黄经
-    var targetLongitude = (termIndex * 15 + 255) % 360;
+    var targetLongitude = (termIndex * 15 + 285) % 360;
     if (targetLongitude >= 360) targetLongitude -= 360;
 
     // 估算初始日期：每个节气大约相差 15.2 天
@@ -258,6 +258,7 @@
     if (isLeap) {
       // 需要确认该月确实是闰月
       if (leap !== lunarMonth) return null;
+      offset += monthDays(lunarYear, lunarMonth);
     }
 
     offset += lunarDay - 1;
