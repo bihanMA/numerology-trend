@@ -498,8 +498,8 @@ function getYearGanZhi(year, month, day) {
     if (month === 1 || (month === 2 && day < 4)) adjustedYear = year - 1;
   }
 
-  var stemIdx = (adjustedYear - 4 + 10000) % 10;
-  var branchIdx = (adjustedYear - 4 + 10000) % 12;
+  var stemIdx = (adjustedYear - 4 + 10080) % 10;
+  var branchIdx = (adjustedYear - 4 + 10080) % 12;
 
   return {
     stem: BC_STEMS[stemIdx],
@@ -682,8 +682,8 @@ function calculateGrandCycles(chart) {
       stemIdx = (monthStemIdx + i + 1) % 10;
       branchIdx = (monthBranchIdx + i + 1) % 12;
     } else {
-      stemIdx = (monthStemIdx - i - 1 + 100) % 10;
-      branchIdx = (monthBranchIdx - i - 1 + 100) % 12;
+      stemIdx = (monthStemIdx - i - 1 + 120) % 10;
+      branchIdx = (monthBranchIdx - i - 1 + 120) % 12;
     }
 
     var ageStart = startAge + i * 10;
@@ -737,8 +737,8 @@ function findNearestTerm(month, day) {
 // ============ 流年推算 ============
 
 function calculateAnnual(year) {
-  var stemIdx = (year - 4 + 10000) % 10;
-  var branchIdx = (year - 4 + 10000) % 12;
+  var stemIdx = (year - 4 + 10080) % 10;
+  var branchIdx = (year - 4 + 10080) % 12;
   var zodiac = BC_BRANCHES[branchIdx];
 
   return {
