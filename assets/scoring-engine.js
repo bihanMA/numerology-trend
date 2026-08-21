@@ -530,7 +530,7 @@ function calculateAnnualModifier(chart, fiveElements, favElements, grandCycle, a
   if (stemClash && branchClash) modifier -= 5;
 
   // 流年与大运天合地合
-  var stemCombine = (parseInt(STEMS.indexOf(grandCycle.stem)) + parseInt(STEMS.indexOf(annual.stem)) === 5);
+  var stemCombine = (Math.abs(STEMS.indexOf(grandCycle.stem) - STEMS.indexOf(annual.stem)) === 5);
   var branchCombine = BRANCH_COMBINES_6[annual.branch] === grandCycle.branch;
   if (stemCombine && branchCombine) modifier += 5;
 
