@@ -648,8 +648,9 @@
     if (trueSolar === 'on' && longitude !== 120) {
       var correctionMin = (longitude - 120) * 4;
       var correctedHour = hour + correctionMin / 60;
-      if (correctedHour < 0) correctedHour += 24;
-      if (correctedHour >= 24) correctedHour -= 24;
+      var dateOffset = 0;
+      if (correctedHour < 0) { correctedHour += 24; dateOffset = -1; }
+      if (correctedHour >= 24) { correctedHour -= 24; dateOffset = 1; }
       var oldShichen = getShichen(hour);
       var newShichen = getShichen(Math.floor(correctedHour));
       if (oldShichen !== newShichen) {
@@ -657,6 +658,14 @@
           SHICHEN_NAMES[oldShichen] + '时变为' + SHICHEN_NAMES[newShichen] + '时';
       }
       hour = Math.floor(correctedHour);
+      if (dateOffset !== 0) {
+        var adjDate = new Date(year, month - 1, day);
+        adjDate.setDate(adjDate.getDate() + dateOffset);
+        year = adjDate.getFullYear();
+        month = adjDate.getMonth() + 1;
+        day = adjDate.getDate();
+        trueSolarNote += (trueSolarNote ? '；' : '') + '日期跨日修正为' + year + '年' + month + '月' + day + '日';
+      }
     }
 
     // 时辰临界提醒
@@ -905,7 +914,23 @@
         '<div class="gc-bar" style="background:' + level.color + '"></div>';
       item.addEventListener('click', function() {
         var firstYear = state.yearlyTrends.findIndex(function(t) { return t.grandCycleIndex === idx; });
-        if (firstYear >= 0) { state.selectedYearIdx = firstYear; renderBaZiDaYun(); }
+        if (firstYear >= 0) {
+          state.selectedYearIdx = firstYear;
+        } else {
+          var gc2 = state.grandCycles[idx];
+          var midAge = Math.floor((gc2.ageStart + gc2.ageEnd) / 2);
+          var midYear = state.birthInfo.year + midAge;
+          var annual2 = calculateAnnual(midYear);
+          var trend2 = calculateTrend(state.baziChart, gc2, annual2);
+          var narrative2 = generateNarrative(trend2, state.baziChart, gc2, annual2);
+          state.yearlyTrends.push({
+            year: midYear, age: midAge, grandCycleIndex: idx,
+            grandCycle: gc2, annual: annual2,
+            trend: trend2, narrative: narrative2
+          });
+          state.selectedYearIdx = state.yearlyTrends.length - 1;
+        }
+        renderBaZiDaYun();
       });
       track.appendChild(item);
     });
